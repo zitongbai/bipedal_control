@@ -1,0 +1,44 @@
+targetDisplacementVelocity          0.5;
+targetRotationVelocity              0.3;
+
+comHeight                           0.575
+
+defaultJointState
+{
+   (0,0)   0.00   ; left_hip_yaw_link
+   (1,0)   0.00   ; left_hip_roll_link
+   (2,0)  -0.30   ; left_hip_pitch_link
+   (3,0)   0.60   ; left_knee_link
+   (4,0)  -0.30   ; left_ankle_link
+   (5,0)   0.00   ; right_hip_yaw_link
+   (6,0)   0.00   ; right_hip_roll_link
+   (7,0)  -0.30   ; right_hip_pitch_link
+   (8,0)   0.60   ; right_knee_link
+   (9,0)  -0.30   ; right_ankle_link
+}
+
+initialModeSchedule
+{
+  modeSequence
+  {
+    [0]  STANCE
+    [1]  STANCE
+  }
+  eventTimes
+  {
+    [0]  0.5
+  }
+}
+
+defaultModeSequenceTemplate
+{
+  modeSequence
+  {
+    [0]  STANCE
+  }
+  switchingTimes
+  {
+    [0]  0.0
+    [1]  1.0
+  }
+}
