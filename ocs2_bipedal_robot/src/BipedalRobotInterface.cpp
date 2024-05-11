@@ -117,6 +117,9 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
   pinocchioInterfacePtr_.reset(new PinocchioInterface(centroidal_model::createPinocchioInterface(urdfFile, modelSettings_.jointNames)));
 
   // CentroidalModelInfo
+  // for unitree H1
+  //  centroidalModelInfo_.stateDim = 22
+  //  centroidalModelInfo_.generalizedCoordinatesNum = 16
   centroidalModelInfo_ = centroidal_model::createCentroidalModelInfo(
       *pinocchioInterfacePtr_, centroidal_model::loadCentroidalType(taskFile),
       centroidal_model::loadDefaultJointState(pinocchioInterfacePtr_->getModel().nq - 6, referenceFile), modelSettings_.contactNames3DoF,
@@ -237,9 +240,9 @@ std::shared_ptr<GaitSchedule> BipedalRobotInterface::loadGaitSchedule(const std:
 /******************************************************************************************************/
 /******************************************************************************************************/
 matrix_t BipedalRobotInterface::initializeInputCostWeight(const std::string& taskFile, const CentroidalModelInfo& info) {
-  const size_t totalContactDim = 3 * info.numThreeDofContacts;
+  const size_t totalContactDim = 3 * info.numThreeDofContacts; // 3 * 2 = 6
 
-  vector_t initialState(centroidalModelInfo_.stateDim);
+  vector_t initialState(centroidalModelInfo_.stateDim); // 22
   loadData::loadEigenMatrix(taskFile, "initialState", initialState);
 
   const auto& model = pinocchioInterfacePtr_->getModel();
