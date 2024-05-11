@@ -29,32 +29,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <vector>
 
-#include <ocs2_core/Types.h>
+#include <ocs2_msgs/mode_schedule.h>
+
+#include <ocs2_bipedal_robot/gait/ModeSequenceTemplate.h>
 
 namespace ocs2 {
 namespace bipedal_robot {
 
-struct ModelSettings {
-  scalar_t positionErrorGain = 0.0;
+/** Convert mode sequence template to ROS message */
+inline ocs2_msgs::mode_schedule createModeSequenceTemplateMsg(const ModeSequenceTemplate& modeSequenceTemplate) {
+  ocs2_msgs::mode_schedule modeScheduleMsg;
+  modeScheduleMsg.eventTimes.assign(modeSequenceTemplate.switchingTimes.begin(), modeSequenceTemplate.switchingTimes.end());
+  modeScheduleMsg.modeSequence.assign(modeSequenceTemplate.modeSequence.begin(), modeSequenceTemplate.modeSequence.end());
+  return modeScheduleMsg;
+}
 
-  scalar_t phaseTransitionStanceTime = 0.4;
-
-  bool verboseCppAd = true;
-  bool recompileLibrariesCppAd = true;
-  std::string modelFolderCppAd = "/tmp/ocs2";
-
-  // This is only used to get names for the knees and to check urdf for extra joints that need to be fixed.
-  std::vector<std::string> jointNames{"left_hip_yaw_joint", "left_hip_roll_joint", "left_hip_pitch_joint", "left_knee_joint", "left_ankle_joint", 
-                                      "right_hip_yaw_joint", "right_hip_roll_joint", "right_hip_pitch_joint", "right_knee_joint", "right_ankle_joint"};
-  std::vector<std::string> contactNames6DoF{};
-  std::vector<std::string> contactNames3DoF{"left_sole_link", "right_sole_link"};
-};
-
-ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = "true");
+/** Convert ROS message to mode sequence template */
+inline ModeSequenceTemplate readModeSequenceTemplateMsg(const ocs2_msgs::mode_schedule& modeScheduleMsg) {
+  std::vector<scalar_t> switchingTimes(modeScheduleMsg.eventTimes.begin(), modeScheduleMsg.eventTimes.end());
+  std::vector<size_t> modeSequence(modeScheduleMsg.modeSequence.begin(), modeScheduleMsg.modeSequence.end());
+  return {switchingTimes, modeSequence};
+}
 
 }  // namespace bipedal_robot
 }  // namespace ocs2

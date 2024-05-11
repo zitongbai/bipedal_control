@@ -29,32 +29,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <vector>
 
-#include <ocs2_core/Types.h>
+#include <ros/ros.h>
+#include <std_msgs/Bool.h>
+
+#include <ocs2_bipedal_robot/gait/ModeSequenceTemplate.h>
 
 namespace ocs2 {
 namespace bipedal_robot {
 
-struct ModelSettings {
-  scalar_t positionErrorGain = 0.0;
+/** This class implements ModeSequence communication using ROS. */
+class GaitKeyboardPublisher {
+ public:
+  GaitKeyboardPublisher(ros::NodeHandle nodeHandle, const std::string& gaitFile, const std::string& robotName, bool verbose = false);
 
-  scalar_t phaseTransitionStanceTime = 0.4;
+  /** Prints the command line interface and responds to user input. Function returns after one user input. */
+  void getKeyboardCommand();
 
-  bool verboseCppAd = true;
-  bool recompileLibrariesCppAd = true;
-  std::string modelFolderCppAd = "/tmp/ocs2";
+ private:
+  /** Prints the list of available gaits. */
+  void printGaitList(const std::vector<std::string>& gaitList) const;
 
-  // This is only used to get names for the knees and to check urdf for extra joints that need to be fixed.
-  std::vector<std::string> jointNames{"left_hip_yaw_joint", "left_hip_roll_joint", "left_hip_pitch_joint", "left_knee_joint", "left_ankle_joint", 
-                                      "right_hip_yaw_joint", "right_hip_roll_joint", "right_hip_pitch_joint", "right_knee_joint", "right_ankle_joint"};
-  std::vector<std::string> contactNames6DoF{};
-  std::vector<std::string> contactNames3DoF{"left_sole_link", "right_sole_link"};
+  std::vector<std::string> gaitList_;
+  std::map<std::string, ModeSequenceTemplate> gaitMap_;
+
+  ros::Publisher modeSequenceTemplatePublisher_;
 };
 
-ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = "true");
-
 }  // namespace bipedal_robot
-}  // namespace ocs2
+}  // end of namespace ocs2

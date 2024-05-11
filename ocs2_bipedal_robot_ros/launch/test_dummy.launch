@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<launch>
+    <!-- visualization config -->
+    <arg name="rviz"               default="true" />
+    <arg name="description_name"   default="bipedal_robot_description"/>
+    <arg name="multiplot"          default="false"/>
+
+    <!-- The task file for the mpc. -->
+    <arg name="taskFile"          default="$(find ocs2_bipedal_robot)/config/mpc/task.info"/>
+    <!-- The reference related config file of the robot -->
+    <arg name="referenceFile"     default="$(find ocs2_bipedal_robot)/config/command/reference.info"/>
+    <!-- The URDF model of the robot -->
+    <arg name="urdfFile"          default="$(find h1_description)/urdf/h1_with_sole.urdf"/>
+    <!-- The file defining gait definition -->
+    <arg name="gaitCommandFile"   default="$(find ocs2_bipedal_robot)/config/command/gait.info"/>
+
+    <!-- rviz -->
+    <group if="$(arg rviz)">
+      <param name="$(arg description_name)" textfile="$(arg urdfFile)"/>
+      <arg name="rvizconfig" default="$(find ocs2_bipedal_robot_ros)/rviz/bipedal_robot.rviz" />
+      <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rvizconfig)" output="screen" />
+    </group>
+
+
+    <!-- make the files into global parameters -->
+    <param name="multiplot"         value="$(arg multiplot)"/>
+    <param name="taskFile"          value="$(arg taskFile)" />
+    <param name="referenceFile"     value="$(arg referenceFile)" />
+    <param name="urdfFile"          value="$(arg urdfFile)" />
+    <param name="gaitCommandFile"   value="$(arg gaitCommandFile)"/>
+
+
+    <node pkg="ocs2_bipedal_robot_ros" type="bipedal_robot_dummy" name="bipedal_robot_dummy"
+          output="screen" launch-prefix=""/>
+
+          
+</launch>

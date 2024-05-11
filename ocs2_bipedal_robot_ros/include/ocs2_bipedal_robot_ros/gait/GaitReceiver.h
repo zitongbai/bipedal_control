@@ -29,32 +29,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
+#include <mutex>
+
+#include <ros/ros.h>
 
 #include <ocs2_core/Types.h>
+#include <ocs2_msgs/mode_schedule.h>
+#include <ocs2_oc/synchronized_module/SolverSynchronizedModule.h>
+
+#include <ocs2_bipedal_robot/gait/GaitSchedule.h>
+#include <ocs2_bipedal_robot/gait/ModeSequenceTemplate.h>
+#include <ocs2_bipedal_robot/gait/MotionPhaseDefinition.h>
 
 namespace ocs2 {
 namespace bipedal_robot {
 
-struct ModelSettings {
-  scalar_t positionErrorGain = 0.0;
+class GaitReceiver : public SolverSynchronizedModule {
+ public:
+  GaitReceiver(::ros::NodeHandle nodeHandle, std::shared_ptr<GaitSchedule> gaitSchedulePtr, const std::string& robotName);
 
-  scalar_t phaseTransitionStanceTime = 0.4;
+  void preSolverRun(scalar_t initTime, scalar_t finalTime, const vector_t& currentState,
+                    const ReferenceManagerInterface& referenceManager) override;
 
-  bool verboseCppAd = true;
-  bool recompileLibrariesCppAd = true;
-  std::string modelFolderCppAd = "/tmp/ocs2";
+  void postSolverRun(const PrimalSolution& primalSolution) override{};
 
-  // This is only used to get names for the knees and to check urdf for extra joints that need to be fixed.
-  std::vector<std::string> jointNames{"left_hip_yaw_joint", "left_hip_roll_joint", "left_hip_pitch_joint", "left_knee_joint", "left_ankle_joint", 
-                                      "right_hip_yaw_joint", "right_hip_roll_joint", "right_hip_pitch_joint", "right_knee_joint", "right_ankle_joint"};
-  std::vector<std::string> contactNames6DoF{};
-  std::vector<std::string> contactNames3DoF{"left_sole_link", "right_sole_link"};
+ private:
+  void mpcModeSequenceCallback(const ocs2_msgs::mode_schedule::ConstPtr& msg);
+
+  std::shared_ptr<GaitSchedule> gaitSchedulePtr_;
+
+  ::ros::Subscriber mpcModeSequenceSubscriber_;
+
+  std::mutex receivedGaitMutex_;
+  std::atomic_bool gaitUpdated_;
+  ModeSequenceTemplate receivedGait_;
 };
-
-ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = "true");
 
 }  // namespace bipedal_robot
 }  // namespace ocs2

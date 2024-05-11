@@ -27,34 +27,31 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#pragma once
+#include <ros/init.h>
+#include <ros/package.h>
 
-#include <iostream>
-#include <string>
-#include <vector>
+#include "ocs2_bipedal_robot_ros/gait/GaitKeyboardPublisher.h"
 
-#include <ocs2_core/Types.h>
+using namespace ocs2;
+using namespace bipedal_robot;
 
-namespace ocs2 {
-namespace bipedal_robot {
+int main(int argc, char* argv[]) {
+  const std::string robotName = "bipedal_robot";
 
-struct ModelSettings {
-  scalar_t positionErrorGain = 0.0;
+  // Initialize ros node
+  ros::init(argc, argv, robotName + "_mpc_mode_schedule");
+  ros::NodeHandle nodeHandle;
+  // Get node parameters
+  std::string gaitCommandFile;
+  nodeHandle.getParam("/gaitCommandFile", gaitCommandFile);
+  std::cerr << "Loading gait file: " << gaitCommandFile << std::endl;
 
-  scalar_t phaseTransitionStanceTime = 0.4;
+  GaitKeyboardPublisher gaitCommand(nodeHandle, gaitCommandFile, robotName, true);
 
-  bool verboseCppAd = true;
-  bool recompileLibrariesCppAd = true;
-  std::string modelFolderCppAd = "/tmp/ocs2";
+  while (ros::ok() && ros::master::check()) {
+    gaitCommand.getKeyboardCommand();
+  }
 
-  // This is only used to get names for the knees and to check urdf for extra joints that need to be fixed.
-  std::vector<std::string> jointNames{"left_hip_yaw_joint", "left_hip_roll_joint", "left_hip_pitch_joint", "left_knee_joint", "left_ankle_joint", 
-                                      "right_hip_yaw_joint", "right_hip_roll_joint", "right_hip_pitch_joint", "right_knee_joint", "right_ankle_joint"};
-  std::vector<std::string> contactNames6DoF{};
-  std::vector<std::string> contactNames3DoF{"left_sole_link", "right_sole_link"};
-};
-
-ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = "true");
-
-}  // namespace bipedal_robot
-}  // namespace ocs2
+  // Successful exit
+  return 0;
+}
