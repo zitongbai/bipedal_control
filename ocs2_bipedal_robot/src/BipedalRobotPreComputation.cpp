@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <ocs2_core/misc/Numerics.h>
 
-#include <ocs2_legged_robot/BipedalRobotPreComputation.h>
+#include <ocs2_bipedal_robot/BipedalRobotPreComputation.h>
 
 namespace ocs2 {
 namespace bipedal_robot {

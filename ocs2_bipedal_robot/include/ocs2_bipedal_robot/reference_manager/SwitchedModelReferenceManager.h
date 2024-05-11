@@ -41,6 +41,8 @@ namespace bipedal_robot {
 
 /**
  * Manages the ModeSchedule and the TargetTrajectories for switched model.
+ * It is instantiated in the BipedalRobotInterface.
+ * At the beginning of each mpc run (mpc calculation), `preSolverRun` (method of the base class) is called.
  */
 class SwitchedModelReferenceManager : public ReferenceManager {
  public:

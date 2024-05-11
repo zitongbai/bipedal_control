@@ -1,6 +1,6 @@
 centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
   
-legged_robot_interface
+bipedal_robot_interface
 {
   verbose                               false  // show the loaded parameters
   useAnalyticalGradientsDynamics        false

@@ -4,6 +4,9 @@ project(ocs2_bipedal_robot)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
+# Generate compile_commands.json for clang tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -20,9 +23,20 @@ find_package(catkin REQUIRED COMPONENTS
   ocs2_sqp
 )
 
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(catkin REQUIRED COMPONENTS
+  ${CATKIN_PACKAGE_DEPENDENCIES}
+)
 
+## System dependencies are found with CMake's conventions
+find_package(Boost REQUIRED COMPONENTS
+  system
+  filesystem
+)
+
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(pinocchio REQUIRED pinocchio)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -109,33 +123,89 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ocs2_bipedal_robot
-#  CATKIN_DEPENDS ocs2_centroidal_model ocs2_core ocs2_ddp ocs2_ipm ocs2_mpc ocs2_oc ocs2_pinocchio_interface ocs2_robotic_assets ocs2_robotic_tools ocs2_sqp
-#  DEPENDS system_lib
+  INCLUDE_DIRS
+    include
+    ${EIGEN3_INCLUDE_DIRS}
+  LIBRARIES
+    ${PROJECT_NAME}
+  CATKIN_DEPENDS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
+  DEPENDS
+    Boost
+    pinocchio
 )
 
 ###########
 ## Build ##
 ###########
 
+# Resolve for the package path at compile time.
+configure_file (
+  "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/package_path.h.in"
+  "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/package_path.h" @ONLY
+)
+
+set(FLAGS
+  ${OCS2_CXX_FLAGS}
+  ${pinocchio_CFLAGS_OTHER}
+  -Wno-ignored-attributes
+  -Wno-invalid-partial-specialization   # to silence warning with unsupported Eigen Tensor
+  -DPINOCCHIO_URDFDOM_TYPEDEF_SHARED_PTR
+  -DPINOCCHIO_URDFDOM_USE_STD_SHARED_PTR
+)
+
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
+  ${pinocchio_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
+link_directories(
+  ${pinocchio_LIBRARY_DIRS}
+)
+
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/ocs2_bipedal_robot.cpp
-# )
+# bipedal robot interface library
+add_library(${PROJECT_NAME}
+  src/common/ModelSettings.cpp
+  src/dynamics/BipedalRobotDynamicsAD.cpp
+  src/constraint/EndEffectorLinearConstraint.cpp
+  src/constraint/FrictionConeConstraint.cpp
+  src/constraint/ZeroForceConstraint.cpp
+  src/constraint/NormalVelocityConstraintCppAd.cpp
+  src/constraint/ZeroVelocityConstraintCppAd.cpp
+  src/initialization/BipedalRobotInitializer.cpp
+  src/reference_manager/SwitchedModelReferenceManager.cpp
+  src/foot_planner/CubicSpline.cpp
+  src/foot_planner/SplineCpg.cpp
+  src/foot_planner/SwingTrajectoryPlanner.cpp
+  src/gait/Gait.cpp
+  src/gait/GaitSchedule.cpp
+  src/gait/ModeSequenceTemplate.cpp
+  src/BipedalRobotInterface.cpp
+  src/BipedalRobotPreComputation.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${pinocchio_LIBRARIES}
+  dl
+)
+
+target_compile_options(${PROJECT_NAME} PUBLIC ${FLAGS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -156,6 +226,21 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+#########################
+###   CLANG TOOLING   ###
+#########################
+
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+   message(STATUS "Run clang tooling for target ocs2_legged_robot")
+   add_clang_tooling(
+     TARGETS ${PROJECT_NAME}
+     SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/test
+     CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+     CF_WERROR
+)
+endif(cmake_clang_tools_FOUND)
 
 #############
 ## Install ##
@@ -179,18 +264,20 @@ include_directories(
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-# install(TARGETS ${PROJECT_NAME}
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-# )
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+install(DIRECTORY config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

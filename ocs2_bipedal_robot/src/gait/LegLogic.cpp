@@ -37,60 +37,60 @@ inline ocs2::scalar_t timingNaN() {
   return std::numeric_limits<ocs2::scalar_t>::quiet_NaN();
 }
 
-inline bool hasStartTime(const ocs2::legged_robot::ContactTiming& timing) {
+inline bool hasStartTime(const ocs2::bipedal_robot::ContactTiming& timing) {
   return !std::isnan(timing.start);
 }
-inline bool hasEndTime(const ocs2::legged_robot::ContactTiming& timing) {
+inline bool hasEndTime(const ocs2::bipedal_robot::ContactTiming& timing) {
   return !std::isnan(timing.end);
 }
 
-inline bool hasStartTime(const ocs2::legged_robot::SwingTiming& timing) {
+inline bool hasStartTime(const ocs2::bipedal_robot::SwingTiming& timing) {
   return !std::isnan(timing.start);
 }
-inline bool hasEndTime(const ocs2::legged_robot::SwingTiming& timing) {
+inline bool hasEndTime(const ocs2::bipedal_robot::SwingTiming& timing) {
   return !std::isnan(timing.end);
 }
 
-inline bool startsWithSwingPhase(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
+inline bool startsWithSwingPhase(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
   return timings.empty() || hasStartTime(timings.front());
 }
-inline bool startsWithContactPhase(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
+inline bool startsWithContactPhase(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
   return !startsWithSwingPhase(timings);
 }
-inline bool endsWithSwingPhase(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
+inline bool endsWithSwingPhase(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
   return timings.empty() || hasEndTime(timings.back());
 }
-inline bool endsWithContactPhase(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
+inline bool endsWithContactPhase(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
   return !endsWithSwingPhase(timings);
 }
 
-inline bool startsWithContactPhase(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
+inline bool startsWithContactPhase(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
   return timings.empty() || hasStartTime(timings.front());
 }
-inline bool startsWithSwingPhase(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
+inline bool startsWithSwingPhase(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
   return !startsWithContactPhase(timings);
 }
-inline bool endsWithContactPhase(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
+inline bool endsWithContactPhase(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
   return timings.empty() || hasEndTime(timings.back());
 }
-inline bool endsWithSwingPhase(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
+inline bool endsWithSwingPhase(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
   return !endsWithContactPhase(timings);
 }
 
-inline bool touchesDownAtLeastOnce(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
-  return std::any_of(timings.begin(), timings.end(), [](const ocs2::legged_robot::ContactTiming& timing) { return hasStartTime(timing); });
+inline bool touchesDownAtLeastOnce(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
+  return std::any_of(timings.begin(), timings.end(), [](const ocs2::bipedal_robot::ContactTiming& timing) { return hasStartTime(timing); });
 }
 
-inline bool liftsOffAtLeastOnce(const std::vector<ocs2::legged_robot::ContactTiming>& timings) {
+inline bool liftsOffAtLeastOnce(const std::vector<ocs2::bipedal_robot::ContactTiming>& timings) {
   return !timings.empty() && hasEndTime(timings.front());
 }
 
-inline bool touchesDownAtLeastOnce(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
+inline bool touchesDownAtLeastOnce(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
   return !timings.empty() && hasEndTime(timings.front());
 }
 
-inline bool liftsOffAtLeastOnce(const std::vector<ocs2::legged_robot::SwingTiming>& timings) {
-  return std::any_of(timings.begin(), timings.end(), [](const ocs2::legged_robot::SwingTiming& timing) { return hasStartTime(timing); });
+inline bool liftsOffAtLeastOnce(const std::vector<ocs2::bipedal_robot::SwingTiming>& timings) {
+  return std::any_of(timings.begin(), timings.end(), [](const ocs2::bipedal_robot::SwingTiming& timing) { return hasStartTime(timing); });
 }
 
 }  // anonymous namespace

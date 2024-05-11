@@ -90,7 +90,7 @@ BipedalRobotInterface::BipedalRobotInterface(const std::string& taskFile, const 
   }
 
   bool verbose;
-  loadData::loadCppDataType(taskFile, "legged_robot_interface.verbose", verbose);
+  loadData::loadCppDataType(taskFile, "bipedal_robot_interface.verbose", verbose);
 
   // load setting from loading file
   modelSettings_ = loadModelSettings(taskFile, "model_settings", verbose);
@@ -123,8 +123,9 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
       modelSettings_.contactNames6DoF);
 
   // Swing trajectory planner
+  const size_t numFeet = 2;
   auto swingTrajectoryPlanner =
-      std::make_unique<SwingTrajectoryPlanner>(loadSwingTrajectorySettings(taskFile, "swing_trajectory_config", verbose), 4);
+      std::make_unique<SwingTrajectoryPlanner>(loadSwingTrajectorySettings(taskFile, "swing_trajectory_config", verbose), numFeet);
 
   // Mode schedule manager
   referenceManagerPtr_ =
@@ -135,7 +136,7 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
 
   // Dynamics
   bool useAnalyticalGradientsDynamics = false;
-  loadData::loadCppDataType(taskFile, "legged_robot_interface.useAnalyticalGradientsDynamics", useAnalyticalGradientsDynamics);
+  loadData::loadCppDataType(taskFile, "bipedal_robot_interface.useAnalyticalGradientsDynamics", useAnalyticalGradientsDynamics);
   std::unique_ptr<SystemDynamicsBase> dynamicsPtr;
   if (useAnalyticalGradientsDynamics) {
     throw std::runtime_error("[BipedalRobotInterface::setupOptimalConrolProblem] The analytical dynamics class is not yet implemented!");
@@ -156,7 +157,7 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
   std::tie(frictionCoefficient, barrierPenaltyConfig) = loadFrictionConeSettings(taskFile, verbose);
 
   bool useAnalyticalGradientsConstraints = false;
-  loadData::loadCppDataType(taskFile, "legged_robot_interface.useAnalyticalGradientsConstraints", useAnalyticalGradientsConstraints);
+  loadData::loadCppDataType(taskFile, "bipedal_robot_interface.useAnalyticalGradientsConstraints", useAnalyticalGradientsConstraints);
   for (size_t i = 0; i < centroidalModelInfo_.numThreeDofContacts; i++) {
     const std::string& footName = modelSettings_.contactNames3DoF[i];
 
