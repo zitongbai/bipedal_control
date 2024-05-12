@@ -148,7 +148,19 @@ void BipedalRobotVisualizer::publishJointTransforms(ros::Time timeStamp, const v
           {"right_hip_roll_joint", jointAngles[6]}, 
           {"right_hip_pitch_joint", jointAngles[7]},  
           {"right_knee_joint", jointAngles[8]},
-          {"right_ankle_joint", jointAngles[9]}};
+          {"right_ankle_joint", jointAngles[9]},
+          
+          {"torso_joint", 0.0},
+          {"left_shoulder_pitch_joint", 0.0},
+          {"left_shoulder_roll_joint", 0.0},
+          {"left_shoulder_yaw_joint", 0.0},
+          {"left_elbow_joint", 0.0},
+          {"right_shoulder_pitch_joint", 0.0},
+          {"right_shoulder_roll_joint", 0.0},
+          {"right_shoulder_yaw_joint", 0.0},
+          {"right_elbow_joint", 0.0},
+          
+          };
     robotStatePublisherPtr_->publishTransforms(jointPositions, timeStamp);
   }
 }
