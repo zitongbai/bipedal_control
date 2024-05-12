@@ -190,8 +190,8 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
     problemPtr_->equalityConstraintPtr->add(footName + "_zeroForce", getZeroForceConstraint(i));
     problemPtr_->equalityConstraintPtr->add(footName + "_zeroVelocity",
                                             getZeroVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
-    problemPtr_->equalityConstraintPtr->add(footName + "_normalVelocity",
-                                            getNormalVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
+    // problemPtr_->equalityConstraintPtr->add(footName + "_normalVelocity",
+    //                                         getNormalVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
   }
 
   // Pre-computation

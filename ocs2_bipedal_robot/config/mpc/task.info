@@ -82,7 +82,7 @@ ipm
 ; DDP settings
 ddp
 {
-  algorithm                       SLQ
+  algorithm                       ILQR
 
   nThreads                        3
   threadPriority                  50
@@ -91,10 +91,10 @@ ddp
   minRelCost                      1e-1
   constraintTolerance             5e-3
 
-  displayInfo                     false
-  displayShortSummary             false
+  displayInfo                     true
+  displayShortSummary             true
   checkNumericalStability         false
-  debugPrintRollout               false
+  debugPrintRollout               true
 
   AbsTolODE                       1e-5
   RelTolODE                       1e-3
