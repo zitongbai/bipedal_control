@@ -138,10 +138,17 @@ void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const Syste
 /******************************************************************************************************/
 void BipedalRobotVisualizer::publishJointTransforms(ros::Time timeStamp, const vector_t& jointAngles) const {
   if (robotStatePublisherPtr_ != nullptr) {
-    std::map<std::string, scalar_t> jointPositions{{"LF_HAA", jointAngles[0]}, {"LF_HFE", jointAngles[1]},  {"LF_KFE", jointAngles[2]},
-                                                   {"LH_HAA", jointAngles[3]}, {"LH_HFE", jointAngles[4]},  {"LH_KFE", jointAngles[5]},
-                                                   {"RF_HAA", jointAngles[6]}, {"RF_HFE", jointAngles[7]},  {"RF_KFE", jointAngles[8]},
-                                                   {"RH_HAA", jointAngles[9]}, {"RH_HFE", jointAngles[10]}, {"RH_KFE", jointAngles[11]}};
+    std::map<std::string, scalar_t> jointPositions{
+          {"left_hip_yaw_joint", jointAngles[0]}, 
+          {"left_hip_roll_joint", jointAngles[1]}, 
+          {"left_hip_pitch_joint", jointAngles[2]},
+          {"left_knee_joint", jointAngles[3]}, 
+          {"left_ankle_joint", jointAngles[4]},
+          {"right_hip_yaw_joint", jointAngles[5]},
+          {"right_hip_roll_joint", jointAngles[6]}, 
+          {"right_hip_pitch_joint", jointAngles[7]},  
+          {"right_knee_joint", jointAngles[8]},
+          {"right_ankle_joint", jointAngles[9]}};
     robotStatePublisherPtr_->publishTransforms(jointPositions, timeStamp);
   }
 }
@@ -153,7 +160,7 @@ void BipedalRobotVisualizer::publishBaseTransform(ros::Time timeStamp, const vec
   if (robotStatePublisherPtr_ != nullptr) {
     geometry_msgs::TransformStamped baseToWorldTransform;
     baseToWorldTransform.header = getHeaderMsg(frameId_, timeStamp);
-    baseToWorldTransform.child_frame_id = "base";
+    baseToWorldTransform.child_frame_id = "pelvis";
 
     const Eigen::Quaternion<scalar_t> q_world_base = getQuaternionFromEulerAnglesZyx(vector3_t(basePose.tail<3>()));
     baseToWorldTransform.transform.rotation = getOrientationMsg(q_world_base);

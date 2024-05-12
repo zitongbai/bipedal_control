@@ -204,6 +204,20 @@ target_link_libraries(bipedal_robot_ddp_mpc
 )
 target_compile_options(bipedal_robot_ddp_mpc PRIVATE ${OCS2_CXX_FLAGS})
 
+## SQP-MPC node for bipedal robot
+add_executable(bipedal_robot_sqp_mpc
+  src/BipedalRobotSqpMpcNode.cpp
+)
+add_dependencies(bipedal_robot_sqp_mpc
+  ${PROJECT_NAME}
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
+target_link_libraries(bipedal_robot_sqp_mpc
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+target_compile_options(bipedal_robot_sqp_mpc  PRIVATE ${OCS2_CXX_FLAGS})
 
 # Dummy node
 add_executable(bipedal_robot_dummy

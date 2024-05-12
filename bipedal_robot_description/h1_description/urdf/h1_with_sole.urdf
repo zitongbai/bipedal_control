@@ -1263,18 +1263,100 @@ Stephen Brawner (brawner@gmail.com)
     <axis
       xyz="0 0 0" />
   </joint>
-  <joint name="left_sole_joint" type="fixed">
-    <origin xyz="0.0 0.0 -0.06" rpy="0 0 0"/>
+  <joint name="left_sole_1_joint" type="fixed">
+    <origin xyz="0.19 0.0 -0.06" rpy="0 0 0"/>
     <parent link="left_ankle_link"/>
-    <child link="left_sole_link"/>
+    <child link="left_sole_1_link"/>
   </joint>
-  <link name="left_sole_link">
+  <link name="left_sole_1_link">
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
   </link>
-  <joint name="right_sole_joint" type="fixed">
-    <origin xyz="0.0 0.0 -0.06" rpy="0 0 0"/>
+
+  <joint name="left_sole_2_joint" type="fixed">
+    <origin xyz="-0.1 0.0 -0.06" rpy="0 0 0"/>
+    <parent link="left_ankle_link"/>
+    <child link="left_sole_2_link"/>
+  </joint>
+  <link name="left_sole_2_link">
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_sole_1_joint" type="fixed">
+    <origin xyz="0.19 0.0 -0.06" rpy="0 0 0"/>
     <parent link="right_ankle_link"/>
-    <child link="right_sole_link"/>
+    <child link="right_sole_1_link"/>
   </joint>
-  <link name="right_sole_link">
+  <link name="right_sole_1_link">
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
   </link>
+
+  <joint name="right_sole_2_joint" type="fixed">
+    <origin xyz="-0.1 0.0 -0.06" rpy="0 0 0"/>
+    <parent link="right_ankle_link"/>
+    <child link="right_sole_2_link"/>
+  </joint>
+  <link name="right_sole_2_link">
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
 </robot>

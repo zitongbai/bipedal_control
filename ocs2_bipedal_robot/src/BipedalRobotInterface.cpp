@@ -126,7 +126,7 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
       modelSettings_.contactNames6DoF);
 
   // Swing trajectory planner
-  const size_t numFeet = 2;
+  const size_t numFeet = 4;
   auto swingTrajectoryPlanner =
       std::make_unique<SwingTrajectoryPlanner>(loadSwingTrajectorySettings(taskFile, "swing_trajectory_config", verbose), numFeet);
 
@@ -151,7 +151,7 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
   problemPtr_->dynamicsPtr = std::move(dynamicsPtr);
 
   // Cost terms
-  problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, false));
+  problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, true));
 
   // Constraint terms
   // friction cone settings
@@ -190,8 +190,8 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
     problemPtr_->equalityConstraintPtr->add(footName + "_zeroForce", getZeroForceConstraint(i));
     problemPtr_->equalityConstraintPtr->add(footName + "_zeroVelocity",
                                             getZeroVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
-    // problemPtr_->equalityConstraintPtr->add(footName + "_normalVelocity",
-    //                                         getNormalVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
+    problemPtr_->equalityConstraintPtr->add(footName + "_normalVelocity",
+                                            getNormalVelocityConstraint(*eeKinematicsPtr, i, useAnalyticalGradientsConstraints));
   }
 
   // Pre-computation
@@ -240,9 +240,9 @@ std::shared_ptr<GaitSchedule> BipedalRobotInterface::loadGaitSchedule(const std:
 /******************************************************************************************************/
 /******************************************************************************************************/
 matrix_t BipedalRobotInterface::initializeInputCostWeight(const std::string& taskFile, const CentroidalModelInfo& info) {
-  const size_t totalContactDim = 3 * info.numThreeDofContacts; // 3 * 2 = 6
+  const size_t totalContactDim = 3 * info.numThreeDofContacts;
 
-  vector_t initialState(centroidalModelInfo_.stateDim); // 22
+  vector_t initialState(centroidalModelInfo_.stateDim); 
   loadData::loadEigenMatrix(taskFile, "initialState", initialState);
 
   const auto& model = pinocchioInterfacePtr_->getModel();

@@ -30,11 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ros/init.h>
 #include <ros/package.h>
 
-#include <ocs2_ddp/GaussNewtonDDP_MPC.h>
 #include <ocs2_bipedal_robot/BipedalRobotInterface.h>
 #include <ocs2_ros_interfaces/mpc/MPC_ROS_Interface.h>
 #include <ocs2_ros_interfaces/synchronized_module/RosReferenceManager.h>
 #include <ocs2_ros_interfaces/synchronized_module/SolverObserverRosCallbacks.h>
+#include <ocs2_sqp/SqpMpc.h>
 
 #include "ocs2_bipedal_robot_ros/gait/GaitReceiver.h"
 
@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
   std::string taskFile, urdfFile, referenceFile;
   nodeHandle.getParam("/multiplot", multiplot);
   nodeHandle.getParam("/taskFile", taskFile);
-  nodeHandle.getParam("/referenceFile", referenceFile);
   nodeHandle.getParam("/urdfFile", urdfFile);
+  nodeHandle.getParam("/referenceFile", referenceFile);
 
   // Robot interface
   BipedalRobotInterface interface(taskFile, urdfFile, referenceFile);
@@ -67,8 +67,7 @@ int main(int argc, char** argv) {
   rosReferenceManagerPtr->subscribe(nodeHandle);
 
   // MPC
-  GaussNewtonDDP_MPC mpc(interface.mpcSettings(), interface.ddpSettings(), interface.getRollout(), interface.getOptimalControlProblem(),
-                         interface.getInitializer());
+  SqpMpc mpc(interface.mpcSettings(), interface.sqpSettings(), interface.getOptimalControlProblem(), interface.getInitializer());
   mpc.getSolverPtr()->setReferenceManager(rosReferenceManagerPtr);
   mpc.getSolverPtr()->addSynchronizedModule(gaitReceiverPtr);
 
@@ -86,10 +85,6 @@ int main(int argc, char** argv) {
       mpc.getSolverPtr()->addSolverObserver(createStateInputBoundsObserver(footName + "_zeroVelocity"));
     }
   }
-
-  auto target_traj = interface.getReferenceManagerPtr()->getTargetTrajectories();
-  std::cerr << "target_traj.size() = ";
-  std::cerr << target_traj.size() << std::endl;
 
   // Launch MPC ROS node
   MPC_ROS_Interface mpcNode(mpc, robotName);

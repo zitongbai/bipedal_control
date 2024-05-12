@@ -59,16 +59,16 @@ inline contact_flag_t modeNumber2StanceLeg(const size_t& modeNumber) {
 
   switch (modeNumber) {
     case 0:
-      stanceLegs = contact_flag_t{false, false};
+      stanceLegs = contact_flag_t{false, false, false, false};
       break;  // 0:  0-leg-stance
     case 1:
-      stanceLegs = contact_flag_t{true, false};
+      stanceLegs = contact_flag_t{true, true, false, false};
       break;  // 1:  LF
     case 2:
-      stanceLegs = contact_flag_t{false, true};
+      stanceLegs = contact_flag_t{false, false, true, true};
       break;  // 2:  RF
     case 3:
-      stanceLegs = contact_flag_t{true, true};
+      stanceLegs = contact_flag_t{true, true, true, true};
       break;  // 3:  LF, RF
   }
 
