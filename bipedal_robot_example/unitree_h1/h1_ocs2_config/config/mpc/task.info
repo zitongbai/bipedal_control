@@ -15,6 +15,30 @@ model_settings
   verboseCppAd                  true
   recompileLibrariesCppAd       true
   modelFolderCppAd              /tmp/ocs2
+  jointNames
+  {
+    [0] left_hip_yaw_joint
+    [1] left_hip_roll_joint
+    [2] left_hip_pitch_joint
+    [3] left_knee_joint
+    [4] left_ankle_joint
+    [5] right_hip_yaw_joint
+    [6] right_hip_roll_joint
+    [7] right_hip_pitch_joint
+    [8] right_knee_joint
+    [9] right_ankle_joint
+  }
+  contactNames6DoF
+  {
+
+  }
+  contactNames3DoF
+  {
+    [0] left_sole_1_link
+    [1] left_sole_2_link
+    [2] right_sole_1_link
+    [3] right_sole_2_link
+  }
 }
 
 swing_trajectory_config

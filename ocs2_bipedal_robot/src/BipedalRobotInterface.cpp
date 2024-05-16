@@ -151,7 +151,7 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
   problemPtr_->dynamicsPtr = std::move(dynamicsPtr);
 
   // Cost terms
-  problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, true));
+  problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, false));
 
   // Constraint terms
   // friction cone settings

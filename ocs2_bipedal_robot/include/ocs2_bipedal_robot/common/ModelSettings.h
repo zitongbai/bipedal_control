@@ -47,11 +47,9 @@ struct ModelSettings {
   bool recompileLibrariesCppAd = true;
   std::string modelFolderCppAd = "/tmp/ocs2";
 
-  // This is only used to get names for the knees and to check urdf for extra joints that need to be fixed.
-  std::vector<std::string> jointNames{"left_hip_yaw_joint", "left_hip_roll_joint", "left_hip_pitch_joint", "left_knee_joint", "left_ankle_joint", 
-                                      "right_hip_yaw_joint", "right_hip_roll_joint", "right_hip_pitch_joint", "right_knee_joint", "right_ankle_joint"};
+  std::vector<std::string> jointNames;
   std::vector<std::string> contactNames6DoF{};
-  std::vector<std::string> contactNames3DoF{"left_sole_1_link", "left_sole_2_link", "right_sole_1_link", "right_sole_2_link"};
+  std::vector<std::string> contactNames3DoF;
 };
 
 ModelSettings loadModelSettings(const std::string& filename, const std::string& fieldName = "model_settings", bool verbose = "true");

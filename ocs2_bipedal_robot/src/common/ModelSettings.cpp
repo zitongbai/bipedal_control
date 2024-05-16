@@ -55,6 +55,10 @@ ModelSettings loadModelSettings(const std::string& filename, const std::string& 
   loadData::loadPtreeValue(pt, modelSettings.recompileLibrariesCppAd, fieldName + ".recompileLibrariesCppAd", verbose);
   loadData::loadPtreeValue(pt, modelSettings.modelFolderCppAd, fieldName + ".modelFolderCppAd", verbose);
 
+  loadData::loadStdVector(filename, fieldName + ".jointNames", modelSettings.jointNames, verbose);
+  loadData::loadStdVector(filename, fieldName + ".contactNames6DoF", modelSettings.contactNames6DoF, verbose);
+  loadData::loadStdVector(filename, fieldName + ".contactNames3DoF", modelSettings.contactNames3DoF, verbose);
+
   if (verbose) {
     std::cerr << " #### =============================================================================" << std::endl;
   }

@@ -67,6 +67,16 @@ BipedalRobotVisualizer::BipedalRobotVisualizer(PinocchioInterface pinocchioInter
       minPublishTimeDifference_(1.0 / maxUpdateFrequency) {
   endEffectorKinematicsPtr_->setPinocchioInterface(pinocchioInterface_);
   launchVisualizerNode(nodeHandle);
+
+  // get joint names
+  const auto& model = pinocchioInterface_.getModel();
+  jointNames_.reserve(model.njoints-2); // Exclude universe and root_joint
+  for (size_t i = 2; i < model.njoints; i++) {
+    jointNames_.push_back(model.names[i]);
+  }
+  // get base link name
+  baseLinkName_ = model.frames[2].name; // 0: universe, 1: root_joint
+
 };
 
 /******************************************************************************************************/
@@ -138,29 +148,14 @@ void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const Syste
 /******************************************************************************************************/
 void BipedalRobotVisualizer::publishJointTransforms(ros::Time timeStamp, const vector_t& jointAngles) const {
   if (robotStatePublisherPtr_ != nullptr) {
-    std::map<std::string, scalar_t> jointPositions{
-          {"left_hip_yaw_joint", jointAngles[0]}, 
-          {"left_hip_roll_joint", jointAngles[1]}, 
-          {"left_hip_pitch_joint", jointAngles[2]},
-          {"left_knee_joint", jointAngles[3]}, 
-          {"left_ankle_joint", jointAngles[4]},
-          {"right_hip_yaw_joint", jointAngles[5]},
-          {"right_hip_roll_joint", jointAngles[6]}, 
-          {"right_hip_pitch_joint", jointAngles[7]},  
-          {"right_knee_joint", jointAngles[8]},
-          {"right_ankle_joint", jointAngles[9]},
-          
-          {"torso_joint", 0.0},
-          {"left_shoulder_pitch_joint", 0.0},
-          {"left_shoulder_roll_joint", 0.0},
-          {"left_shoulder_yaw_joint", 0.0},
-          {"left_elbow_joint", 0.0},
-          {"right_shoulder_pitch_joint", 0.0},
-          {"right_shoulder_roll_joint", 0.0},
-          {"right_shoulder_yaw_joint", 0.0},
-          {"right_elbow_joint", 0.0},
-          
-          };
+    assert(jointAngles.size() == jointNames_.size());
+
+    // construct a dictionary of joint names and joint positions
+    std::map<std::string, scalar_t> jointPositions;
+    for (size_t i = 0; i < jointNames_.size(); i++) {
+      jointPositions[jointNames_[i]] = jointAngles[i];
+    }
+
     robotStatePublisherPtr_->publishTransforms(jointPositions, timeStamp);
   }
 }
@@ -172,7 +167,7 @@ void BipedalRobotVisualizer::publishBaseTransform(ros::Time timeStamp, const vec
   if (robotStatePublisherPtr_ != nullptr) {
     geometry_msgs::TransformStamped baseToWorldTransform;
     baseToWorldTransform.header = getHeaderMsg(frameId_, timeStamp);
-    baseToWorldTransform.child_frame_id = "pelvis";
+    baseToWorldTransform.child_frame_id = baseLinkName_;
 
     const Eigen::Quaternion<scalar_t> q_world_base = getQuaternionFromEulerAnglesZyx(vector3_t(basePose.tail<3>()));
     baseToWorldTransform.transform.rotation = getOrientationMsg(q_world_base);
