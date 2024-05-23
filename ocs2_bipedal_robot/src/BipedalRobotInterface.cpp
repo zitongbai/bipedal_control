@@ -117,9 +117,6 @@ void BipedalRobotInterface::setupOptimalConrolProblem(const std::string& taskFil
   pinocchioInterfacePtr_.reset(new PinocchioInterface(centroidal_model::createPinocchioInterface(urdfFile, modelSettings_.jointNames)));
 
   // CentroidalModelInfo
-  // for unitree H1
-  //  centroidalModelInfo_.stateDim = 22
-  //  centroidalModelInfo_.generalizedCoordinatesNum = 16
   centroidalModelInfo_ = centroidal_model::createCentroidalModelInfo(
       *pinocchioInterfacePtr_, centroidal_model::loadCentroidalType(taskFile),
       centroidal_model::loadDefaultJointState(pinocchioInterfacePtr_->getModel().nq - 6, referenceFile), modelSettings_.contactNames3DoF,
