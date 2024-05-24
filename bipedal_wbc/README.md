@@ -73,7 +73,6 @@ $$
         \mathbf D \mathbf x \leq \mathbf f
     \end{aligned}
     \right.
-
 $$
 
 ### Equality constraints
@@ -90,7 +89,7 @@ $$
 $$
 
 #### 2. No motion at contact point
-No motion at contact point. The linear and rotational acceleration of the end-effector $i$ (or any other point and link) is coupled to the generalized accelerations through the geometric Jacobians: $ \dot{\mathbf w}_i = \mathbf J_i \dot{\mathbf v} + \dot{\mathbf{J}}_i{\mathbf v} $, where $\mathbf{w}_i$ is the wrench (stack of positon and velocity) of end-effector $i$. For contact points $i$, the acceleration is zero, i.e., $\dot{\mathbf w}_i = 0$. This can be formulated as:
+No motion at contact point. The linear and rotational acceleration of the end-effector $i$ (or any other point and link) is coupled to the generalized accelerations through the geometric Jacobians: $\dot{\mathbf w}_i = \mathbf J_i \dot{\mathbf v} + \dot{\mathbf{J}}_i{\mathbf v}$, where $\mathbf{w}_i$ is the wrench (stack of positon and velocity) of end-effector $i$. For contact points $i$, the acceleration is zero, i.e., $\dot{\mathbf w}_i = 0$. This can be formulated as:
 
 $$
 \mathbf A = \begin{bmatrix}
@@ -169,7 +168,7 @@ $$
 $$
 
 #### 6. Swing foot tracking task
-We have already planned a trajectory for joints, including joint positions and velocities. Through forward kinematics, we can obtain the desired position and velocity of the swing foot (the stack of position and velocity is a wrench $\mathbf{w}_i$). They can be used to construct a PD controller, which gives a desired acceleration $\dot{\mathbf{w}}^*_i$ for the swing foot (contact point) $i$. Equation $ \dot{\mathbf w}_i = \mathbf J_i \dot{\mathbf v} + \dot{\mathbf{J}}_i{\mathbf v} $ (which is used in Equality Constraint 2) is used here to formulate the tracking task: 
+We have already planned a trajectory for joints, including joint positions and velocities. Through forward kinematics, we can obtain the desired position and velocity of the swing foot (the stack of position and velocity is a wrench $\mathbf{w}_i$). They can be used to construct a PD controller, which gives a desired acceleration $\dot{\mathbf{w}}^*_i$ for the swing foot (contact point) $i$. Equation $\dot{\mathbf w}_i = \mathbf J_i \dot{\mathbf v} + \dot{\mathbf{J}}_i{\mathbf v}$ (which is used in Equality Constraint 2) is used here to formulate the tracking task: 
 
 $$
 \mathbf A = \begin{bmatrix}
@@ -177,14 +176,13 @@ $$
     \end{bmatrix}
 \quad
 \mathbf b = \dot{\mathbf{w}}^*_i -\hat{\dot{\mathbf J}}_i \mathbf v
-
 $$
 
 ### Inequality constraints
 
 #### 1. Joint Torque limits
 
-Torque limits $\mathbf{\tau}_{\text{min}} \leq \mathbf{\tau} \leq \mathbf{\tau}_{\text{max}}$ can be formulated as:
+Torque limits $\mathbf\tau_{\min} \le\mathbf{\tau}\le\mathbf\tau_{\max}$ can be formulated as:
 
 $$
 \mathbf D = \begin{bmatrix}
@@ -193,8 +191,8 @@ $$
     \end{bmatrix}
 \quad
 \mathbf f= \begin{bmatrix}
-        \mathbf{\tau}_{\text{max}} \\
-        -\mathbf{\tau}_{\text{min}}
+        \mathbf\tau_{\text{max}} \\
+        -\mathbf\tau_{\text{min}}
     \end{bmatrix}
 $$
 
@@ -215,8 +213,8 @@ $$
         \mathbf F_{c, i}^y \\
         \mathbf F_{c, i}^z
     \end{bmatrix} \leq 0
-
 $$
+
 The above $5\times 3$ matrix should lie in proper positions in a matrix $\mathbf D$. Matrix $\mathbf f = 0$
 
 **TODO**: Currently, the friction cone constraint assumes that the contact points are on the horizontal plane. This should be generalized to any plane. ($\mathbf J_c$ is computed in the `pinocchio::LOCAL_WORLD_ALIGNED` frame, which means that the contact forces are expressed in the same frame.)
