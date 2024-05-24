@@ -58,6 +58,9 @@
   <exec_depend>ocs2_bipedal_robot</exec_depend>
   <exec_depend>qpoases_catkin</exec_depend>
   <exec_depend>roscpp</exec_depend>
+  <depend>pinocchio</depend>
+  <depend>ocs2_core</depend>
+  <depend>ocs2_centroidal_model</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
