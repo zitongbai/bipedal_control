@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>legged_hunter_ocs2_config</name>
+  <name>legged_hunter_config</name>
   <version>0.0.0</version>
-  <description>The legged_hunter_ocs2_config package</description>
+  <description>The legged_hunter_config package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/legged_hunter_ocs2_config</url> -->
+  <!-- <url type="website">http://wiki.ros.org/legged_hunter_config</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
