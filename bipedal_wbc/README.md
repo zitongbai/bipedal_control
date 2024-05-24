@@ -218,3 +218,17 @@ $$
 The above $5\times 3$ matrix should lie in proper positions in a matrix $\mathbf D$. Matrix $\mathbf f = 0$
 
 **TODO**: Currently, the friction cone constraint assumes that the contact points are on the horizontal plane. This should be generalized to any plane. ($\mathbf J_c$ is computed in the `pinocchio::LOCAL_WORLD_ALIGNED` frame, which means that the contact forces are expressed in the same frame.)
+
+
+## Solve the WBC problem
+
+We use qpOASES to solve the WBC problem in the following form:
+
+$$
+\begin{aligned}
+\min_x & \quad & \frac{1}{2} x^T H x + g^T x \\
+\text{s.t.} & \quad & lbA \le Ax \le ubA \\
+& \quad & lb \le x \le ub
+\end{aligned}
+$$
+

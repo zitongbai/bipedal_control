@@ -105,6 +105,8 @@ For implementation of your own robot, here are some steps to follow:
 
 8. Create a launch file like `/bipedal_robot_example/unitree_h1/h1_ocs2_config/launch/bipedal_robot_sqp.launch` to launch the bipedal interface node and a dummy node to test the MPC trajectory planner.
 
+9. Modify `torqueLimitsTask` in `task.info`
+
 # Acknowledgement
 
 * [OCS2](https://github.com/leggedrobotics/ocs2): a C++ toolbox tailored for Optimal Control for Switched Systems.

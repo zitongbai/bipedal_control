@@ -273,3 +273,31 @@ frictionConeSoftConstraint
   mu                     0.1
   delta                  5.0
 }
+
+; Whole body control
+torqueLimitsTask
+{
+  (0,0)  500     ; hip_yaw
+  (1,0)  500     ; hip_roll
+  (2,0)  500     ; hip_pitch
+  (3,0)  500     ; knee
+  (4,0)  500     ; ankle
+}
+
+frictionConeTask
+{
+  frictionCoefficient    0.3
+}
+
+swingLegTask
+{
+    kp                   350
+    kd                   37
+}
+
+weight
+{
+    swingLeg        100
+    baseAccel       1
+    contactForce    0.01
+}

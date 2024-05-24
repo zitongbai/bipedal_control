@@ -298,14 +298,44 @@ Task WbcBase::formulateTorqueLimitsTask() {
   d.block(info_.actuatedDofNum, info_.generalizedCoordinatesNum + 3 * info_.numThreeDofContacts + 6 * info_.numSixDofContacts, info_.actuatedDofNum,
           info_.actuatedDofNum) = -i;
   vector_t f(2 * info_.actuatedDofNum);
-  for (size_t l = 0; l < 2 * info_.actuatedDofNum / 3; ++l) {
-    f.segment<3>(3 * l) = torqueLimits_;
+  int numJointsPerLeg = info_.actuatedDofNum / 2;
+  for (size_t l = 0; l < 2 * 2; ++l) {
+    // f.segment<3>(3 * l) = torqueLimits_;
+    f.segment(numJointsPerLeg * l, numJointsPerLeg) = torqueLimits_;
   }
 
   return {matrix_t(), vector_t(), d, f};
 }
 
-
+void WbcBase::loadTasksSetting(const std::string& taskFile, bool verbose) {
+  // Load task file
+  torqueLimits_ = vector_t(info_.actuatedDofNum / 2); // 2 means two legs
+  loadData::loadEigenMatrix(taskFile, "torqueLimitsTask", torqueLimits_);
+  if (verbose) {
+    std::cerr << "\n #### Torque Limits Task:";
+    std::cerr << "\n #### =============================================================================\n";
+    std::cerr << "\n #### hip yaw, hip roll , hip pitch, knee, ankle: " << torqueLimits_.transpose() << "\n";
+    std::cerr << " #### =============================================================================\n";
+  }
+  boost::property_tree::ptree pt;
+  boost::property_tree::read_info(taskFile, pt);
+  std::string prefix = "frictionConeTask.";
+  if (verbose) {
+    std::cerr << "\n #### Friction Cone Task:";
+    std::cerr << "\n #### =============================================================================\n";
+  }
+  loadData::loadPtreeValue(pt, frictionCoeff_, prefix + "frictionCoefficient", verbose);
+  if (verbose) {
+    std::cerr << " #### =============================================================================\n";
+  }
+  prefix = "swingLegTask.";
+  if (verbose) {
+    std::cerr << "\n #### Swing Leg Task:";
+    std::cerr << "\n #### =============================================================================\n";
+  }
+  loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
+  loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
+}
 
 
 
