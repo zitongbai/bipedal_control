@@ -1,0 +1,16 @@
+<library path="lib/libbipedal_controllers">
+
+    <class name="bipedal_robot/BipedalController" type="ocs2::bipedal_robot::BipedalController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The basic bipedal_robot controller.
+        </description>
+    </class>
+
+    <!-- <class name="legged/LeggedCheaterController" type="legged::LeggedCheaterController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The basic legged controller with cheat state estimator
+        </description>
+    </class> -->
+</library>

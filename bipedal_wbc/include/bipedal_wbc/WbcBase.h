@@ -35,7 +35,7 @@ public:
    * @brief given the desired state, input, and measured state, update
    * 
    * @param stateDesired [h^T, q^T]^T
-   * @param inputDesired 
+   * @param inputDesired [F_c^T, v_j^T]^T
    * @param rbdStateMeasured [euler_zyx, pos, joint_pos, angular_vel, linear_vel, joint_vel]
    *                          3          + 3  + n_j      + 3          + 3         + n_j
    * @param mode 

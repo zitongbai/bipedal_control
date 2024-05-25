@@ -39,6 +39,7 @@ public:
 
   virtual vector_t update(const ros::Time& time, const ros::Duration& period) = 0;
 
+  size_t getMode() { return stanceLeg2ModeNumber(contactFlag_); }
 
 protected:
   void updateAngular(const vector3_t& zyx, const vector_t& angularVel);

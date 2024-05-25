@@ -17,6 +17,8 @@ namespace ocs2{
 namespace bipedal_robot {
 class WeightedWbc : public WbcBase {
 public:
+    explicit WeightedWbc(const PinocchioInterface& pinocchioInterface, CentroidalModelInfo info, const PinocchioEndEffectorKinematics& eeKinematics)
+        : WbcBase(pinocchioInterface, info, eeKinematics) {};
     /**
      * @brief update the desired state, input, and measured state
      *  then solve the problem

@@ -112,3 +112,9 @@ For implementation of your own robot, here are some steps to follow:
 * [OCS2](https://github.com/leggedrobotics/ocs2): a C++ toolbox tailored for Optimal Control for Switched Systems.
 * [legged_control](https://github.com/qiayuanl/legged_control.git):an NMPC-WBC legged robot control stack and framework.
 
+# TODO
+
+* self collision avoidance and visualization
+* Currently, the imu name in ros control must be `base_imu`. If you want to use another name, you should modify the following code:
+   * `BipedalController.cpp`: `imuSensorHandle_ = imuSensorInterface->getHandle("base_imu");`
+   * `/bipedal_gazebo/config/default.yaml`: `base_imu`

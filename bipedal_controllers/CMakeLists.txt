@@ -1,42 +1,33 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ocs2_bipedal_robot)
+project(bipedal_controllers)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
-
-# Generate compile_commands.json for clang tools
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CATKIN_PACKAGE_DEPENDENCIES
-  ocs2_core
-  ocs2_oc
-  ocs2_ddp
-  ocs2_mpc
-  ocs2_sqp
-  ocs2_ipm
-  ocs2_robotic_tools
-  ocs2_pinocchio_interface
-  ocs2_centroidal_model
-  ocs2_robotic_assets
-)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  ${CATKIN_PACKAGE_DEPENDENCIES}
+  bipedal_common
+  bipedal_estimation
+  bipedal_wbc
+  ocs2_bipedal_robot
+  ocs2_bipedal_robot_ros
+  ocs2_self_collision_visualization
+  ocs2_centroidal_model
+  ocs2_core
+  roscpp
+  controller_interface
+  angles
 )
-
-## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS
-  system
-  filesystem
-)
-
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(pinocchio REQUIRED pinocchio)
+
+## System dependencies are found with CMake's conventions
+# find_package(Boost REQUIRED COMPONENTS system)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -123,48 +114,23 @@ pkg_check_modules(pinocchio REQUIRED pinocchio)
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-
 catkin_package(
-  INCLUDE_DIRS
-    include
-    ${EIGEN3_INCLUDE_DIRS}
-  LIBRARIES
-    ${PROJECT_NAME}
-  CATKIN_DEPENDS
-    ${CATKIN_PACKAGE_DEPENDENCIES}
-  DEPENDS
-    Boost
-    pinocchio
+ INCLUDE_DIRS include
+ LIBRARIES ${PROJECT_NAME}
+ CATKIN_DEPENDS bipedal_common bipedal_estimation bipedal_wbc ocs2_bipedal_robot ocs2_bipedal_robot_ros ocs2_self_collision_visualization roscpp angles controller_interface
+#  DEPENDS system_lib
 )
 
 ###########
 ## Build ##
 ###########
 
-# Resolve for the package path at compile time.
-configure_file (
-  "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/package_path.h.in"
-  "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/package_path.h" @ONLY
-)
-
-set(FLAGS
-  ${OCS2_CXX_FLAGS}
-  ${pinocchio_CFLAGS_OTHER}
-  -Wno-ignored-attributes
-  -Wno-invalid-partial-specialization   # to silence warning with unsupported Eigen Tensor
-  -DPINOCCHIO_URDFDOM_TYPEDEF_SHARED_PTR
-  -DPINOCCHIO_URDFDOM_USE_STD_SHARED_PTR
-)
-
-
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${pinocchio_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
+  ${pinocchio_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -172,45 +138,28 @@ link_directories(
 )
 
 ## Declare a C++ library
-# bipedal robot interface library
 add_library(${PROJECT_NAME}
-  src/common/ModelSettings.cpp
-  src/dynamics/BipedalRobotDynamicsAD.cpp
-  src/constraint/EndEffectorLinearConstraint.cpp
-  src/constraint/FrictionConeConstraint.cpp
-  src/constraint/ZeroForceConstraint.cpp
-  src/constraint/NormalVelocityConstraintCppAd.cpp
-  src/constraint/ZeroVelocityConstraintCppAd.cpp
-  src/initialization/BipedalRobotInitializer.cpp
-  src/reference_manager/SwitchedModelReferenceManager.cpp
-  src/foot_planner/CubicSpline.cpp
-  src/foot_planner/SplineCpg.cpp
-  src/foot_planner/SwingTrajectoryPlanner.cpp
-  src/gait/Gait.cpp
-  src/gait/GaitSchedule.cpp
-  src/gait/ModeSequenceTemplate.cpp
-  src/BipedalRobotInterface.cpp
-  src/BipedalRobotPreComputation.cpp
+  src/BipedalController.cpp
 )
+
+target_link_libraries(${PROJECT_NAME}
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+)
+
+target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${pinocchio_LIBRARIES}
-  dl
-)
-
-target_compile_options(${PROJECT_NAME} PUBLIC ${FLAGS})
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/ocs2_bipedal_robot_node.cpp)
+add_executable(bipedal_target_trajectories_publisher
+  src/TargetTrajectoriesPublisher.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -220,27 +169,30 @@ target_compile_options(${PROJECT_NAME} PUBLIC ${FLAGS})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(bipedal_target_trajectories_publisher ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(bipedal_target_trajectories_publisher
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+
+target_compile_options(bipedal_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
+
 
 #########################
 ###   CLANG TOOLING   ###
 #########################
-
 find_package(cmake_clang_tools QUIET)
-if(cmake_clang_tools_FOUND)
-   message(STATUS "Run clang tooling for target ocs2_legged_robot")
-   add_clang_tooling(
-     TARGETS ${PROJECT_NAME}
-     SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/test
-     CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
-     CF_WERROR
-)
-endif(cmake_clang_tools_FOUND)
+if (cmake_clang_tools_FOUND)
+    message(STATUS "Run clang tooling for target " ${PROJECT_NAME})
+    add_clang_tooling(
+            TARGETS ${PROJECT_NAME} legged_target_trajectories_publisher
+            SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include
+            CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+            CF_WERROR
+    )
+endif (cmake_clang_tools_FOUND)
 
 #############
 ## Install ##
@@ -258,9 +210,9 @@ endif(cmake_clang_tools_FOUND)
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS bipedal_target_trajectories_publisher
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
@@ -273,25 +225,22 @@ install(TARGETS ${PROJECT_NAME}
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
-
-install(DIRECTORY config
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(FILES
+  bipedal_controller_plugin.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 #############
 ## Testing ##
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_ocs2_bipedal_robot.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_bipedal_controllers.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
