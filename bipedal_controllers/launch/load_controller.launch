@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 
 <launch> 
-    <arg name="rviz"               default="true" />
+    <arg name="rviz"               default="false" />
     <arg name="description_name"   default="bipedal_robot_description"/>
 
     <!-- The task file for the mpc. -->
@@ -33,7 +33,7 @@
     <node name="controller_loader" pkg="controller_manager" type="controller_manager"
         output="screen" args="load
         controllers/joint_state_controller
-        controllers/bipedal_controller"/>
+        controllers/joint_pos_controller"/>
 
     <!-- target trajectories publisher -->
     <node name="bipedal_robot_target" pkg="bipedal_controllers" type="bipedal_target_trajectories_publisher" output="screen"/>

@@ -107,8 +107,11 @@ void BipedalController::starting(const ros::Time& time){
   currentObservation_.input.setZero(bipedalInterface_->getCentroidalModelInfo().inputDim);
   currentObservation_.mode = ModeNumber::STANCE;
 
-  // publish the initial observation
-  observationPublisher_.publish(ros_msg_conversions::createObservationMsg(currentObservation_));
+  // debug: print initial observation state
+  std::cerr << "===============================================================" << std::endl;
+  std::cerr << "initialObservation state: " << currentObservation_.state.transpose() << std::endl;
+  std::cerr << "===============================================================" << std::endl;
+  
 
   // initial target trajectories
   auto init_target_traj_state = bipedalInterface_->getInitialState();
