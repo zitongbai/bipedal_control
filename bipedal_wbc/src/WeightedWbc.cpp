@@ -35,13 +35,13 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
   ubA << constraints.b_,
          constraints.f_;  // clang-format on
 
-  // debug print A, lbA, ubA
-  std::cerr << "A: " << std::endl;
-  std::cerr << A << std::endl;
-  std::cerr << "lbA: " << std::endl;
-  std::cerr << lbA << std::endl;
-  std::cerr << "ubA: " << std::endl;
-  std::cerr << ubA << std::endl;
+  // // debug print A, lbA, ubA
+  // std::cerr << "A: " << std::endl;
+  // std::cerr << A << std::endl;
+  // std::cerr << "lbA: " << std::endl;
+  // std::cerr << lbA << std::endl;
+  // std::cerr << "ubA: " << std::endl;
+  // std::cerr << ubA << std::endl;
 
   // Cost
   Task weighedTask = formulateWeightedTasks(stateDesired, inputDesired, period);
@@ -68,7 +68,7 @@ Task WeightedWbc::formulateConstraints() {
   return formulateFloatingBaseEomTask() 
         + formulateTorqueLimitsTask() 
         + formulateFrictionConeTask() 
-        + formulateContactNoMotionTask()
+        // + formulateContactNoMotionTask()
         ;
 }
 

@@ -16,9 +16,7 @@ def restart_gazebo():
     switch_controller_service = rospy.ServiceProxy('/controller_manager/switch_controller', SwitchController)
     
     try:
-
         
-
         # -------------------------------------------------------------------
         # Then start the initial joint position controller
         # -------------------------------------------------------------------
