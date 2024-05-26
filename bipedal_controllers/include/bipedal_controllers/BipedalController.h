@@ -91,6 +91,7 @@ protected:
 
   // low-level controller
   std::vector<control_toolbox::Pid> pidControllers_;
+  ros::Publisher debugControlCmdPublisher_;
 
 private:
   std::thread mpcThread_;

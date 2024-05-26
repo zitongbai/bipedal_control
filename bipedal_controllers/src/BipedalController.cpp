@@ -30,6 +30,8 @@
 #include <angles/angles.h>
 #include <pluginlib/class_list_macros.hpp>
 
+#include <sensor_msgs/JointState.h>
+
 namespace ocs2 {
 namespace bipedal_robot {
 
@@ -110,6 +112,8 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
       return false;
     }
   }
+
+  debugControlCmdPublisher_ = nh.advertise<sensor_msgs::JointState>(robotName_+"_joint_cmd_debug", 1);
 
   return true;
 }
@@ -209,16 +213,31 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   vector_t posDes = centroidal_model::getJointAngles(optimizedState, bipedalInterface_->getCentroidalModelInfo());
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
-  scalar_t dt = time.toSec();
+  scalar_t dt = period.toSec();
   posDes = posDes + 0.5* wbcJointAcc * dt * dt;
   velDes = velDes + wbcJointAcc * dt;
 
   for (size_t j = 0; j < jointNum; ++j) {
-    size_t pid_idx = j >= jointNum/2 ? j - jointNum/2 : j;
+    // size_t pid_idx = j >= jointNum/2 ? j - jointNum/2 : j;
+    size_t pid_idx = j < jointNum/2 ? j : j - jointNum/2;
     scalar_t kp = pidControllers_[pid_idx].getGains().p_gain_;
     scalar_t kd = pidControllers_[pid_idx].getGains().d_gain_;
     hybridJointHandles_[j].setCommand(posDes(j), velDes(j), kp, kd, torque(j));
   }
+
+  // for debug
+  sensor_msgs::JointState jointStateCmdMsg;
+  jointStateCmdMsg.name = bipedalInterface_->modelSettings().jointNames;
+  jointStateCmdMsg.position.resize(jointNum);
+  jointStateCmdMsg.velocity.resize(jointNum);
+  jointStateCmdMsg.effort.resize(jointNum);
+  for(size_t i=0; i < jointNum; ++i){
+    jointStateCmdMsg.position[i] = posDes(i);
+    jointStateCmdMsg.velocity[i] = velDes(i);
+    jointStateCmdMsg.effort[i] = torque(i);
+  }
+  jointStateCmdMsg.header.stamp = time;
+  debugControlCmdPublisher_.publish(jointStateCmdMsg);
 
   // TODO: self collision visualization
 

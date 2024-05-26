@@ -24,6 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
   control_toolbox
   realtime_tools
   urdf
+  sensor_msgs
 )
 
 find_package(PkgConfig REQUIRED)
