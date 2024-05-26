@@ -42,7 +42,7 @@ protected:
       std::cerr << "[SafetyChecker] Orientation safety check failed!" << std::endl;
       return false;
     }
-    if (pose(4) > M_PI_2 || pose(4) < M_PI_2) {
+    if (pose(4) > M_PI_2 || pose(4) < -M_PI_2) {
       std::cerr << "[SafetyChecker] Orientation safety check failed!" << std::endl;
       return false;
     }

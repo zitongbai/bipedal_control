@@ -165,14 +165,16 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // visualization
   robotVisualizer_->update(currentObservation_, mpcMrtInterface_->getPolicy(), mpcMrtInterface_->getCommand());
 
-  // debug: print optimizedState, optimizedInput
-  std::cerr << "===============================================================" << std::endl;
-  std::cerr << "optimizedState: " << optimizedState.transpose() << std::endl;
-  std::cerr << "optimizedInput: " << optimizedInput.transpose() << std::endl;
-  std::cerr << "measuredRbdState" << measuredRbdState_.transpose() << std::endl;
-  std::cerr << "plannedMode: " << plannedMode << std::endl;
-  std::cerr << "period: " << period.toSec() << std::endl;
-  std::cerr << "===============================================================" << std::endl;
+  // // debug: print optimizedState, optimizedInput
+  // std::cerr << "===============================================================" << std::endl;
+  // std::cerr << "time" << time.toSec() << std::endl;
+  // std::cerr << "period" << period.toSec() << std::endl;
+  // std::cerr << "optimizedState: " << optimizedState.transpose() << std::endl;
+  // std::cerr << "optimizedInput: " << optimizedInput.transpose() << std::endl;
+  // std::cerr << "measuredRbdState" << measuredRbdState_.transpose() << std::endl;
+  // std::cerr << "plannedMode: " << plannedMode << std::endl;
+  // std::cerr << "period: " << period.toSec() << std::endl;
+  // std::cerr << "===============================================================" << std::endl;
 
   // Whole body control
   wbcTimer_.startTimer();
