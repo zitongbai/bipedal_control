@@ -76,6 +76,10 @@
   <depend>ocs2_centroidal_model</depend>
   <depend>ocs2_core</depend>
 
+  <depend>control_msgs</depend>
+  <depend>control_toolbox</depend>
+  <depend>realtime_tools</depend>
+  <depend>urdf</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -107,10 +107,10 @@ void BipedalController::starting(const ros::Time& time){
   currentObservation_.input.setZero(bipedalInterface_->getCentroidalModelInfo().inputDim);
   currentObservation_.mode = ModeNumber::STANCE;
 
-  // debug: print initial observation state
-  std::cerr << "===============================================================" << std::endl;
-  std::cerr << "initialObservation state: " << currentObservation_.state.transpose() << std::endl;
-  std::cerr << "===============================================================" << std::endl;
+  // // debug: print initial observation state
+  // std::cerr << "===============================================================" << std::endl;
+  // std::cerr << "initialObservation state: " << currentObservation_.state.transpose() << std::endl;
+  // std::cerr << "===============================================================" << std::endl;
   
 
   // initial target trajectories
@@ -128,18 +128,22 @@ void BipedalController::starting(const ros::Time& time){
   }
   ROS_INFO_STREAM("Initial policy has been received.");
 
-  // debug: print initial optimized state and input
-  mpcMrtInterface_->updatePolicy();
-  vector_t initialOptimizedState, initialOptimizedInput;
-  size_t plannedMode = 0;
-  mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, initialOptimizedState, initialOptimizedInput, plannedMode);
-  std::cerr << "===============================================================" << std::endl;
-  std::cerr << "initialOptimizedState: " << initialOptimizedState.transpose() << std::endl;
-  std::cerr << "initialOptimizedInput: " << initialOptimizedInput.transpose() << std::endl;
-  std::cerr << "===============================================================" << std::endl;
+  // // debug: print initial optimized state and input
+  // mpcMrtInterface_->updatePolicy();
+  // vector_t initialOptimizedState, initialOptimizedInput;
+  // size_t plannedMode = 0;
+  // mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, initialOptimizedState, initialOptimizedInput, plannedMode);
+  // std::cerr << "===============================================================" << std::endl;
+  // std::cerr << "initialOptimizedState: " << initialOptimizedState.transpose() << std::endl;
+  // std::cerr << "initialOptimizedInput: " << initialOptimizedInput.transpose() << std::endl;
+  // std::cerr << "===============================================================" << std::endl;
 
   mpcRunning_ = true;
 }
+
+// ###############################################################################################################
+// ###############################################################################################################
+// ###############################################################################################################
 
 void BipedalController::update(const ros::Time& time, const ros::Duration& period) {
   // State estimation
@@ -165,6 +169,9 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   std::cerr << "===============================================================" << std::endl;
   std::cerr << "optimizedState: " << optimizedState.transpose() << std::endl;
   std::cerr << "optimizedInput: " << optimizedInput.transpose() << std::endl;
+  std::cerr << "measuredRbdState" << measuredRbdState_.transpose() << std::endl;
+  std::cerr << "plannedMode: " << plannedMode << std::endl;
+  std::cerr << "period: " << period.toSec() << std::endl;
   std::cerr << "===============================================================" << std::endl;
 
   // Whole body control
@@ -194,9 +201,18 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   observationPublisher_.publish(ros_msg_conversions::createObservationMsg(currentObservation_));
 }
 
+// ###############################################################################################################
+// ###############################################################################################################
+// ###############################################################################################################
+
 void BipedalController::setupBipedalInterface(const std::string& taskFile, const std::string& urdfFile, const std::string& referenceFile, bool verbose){
   bipedalInterface_ = std::make_shared<BipedalRobotInterface>(taskFile, urdfFile, referenceFile);
 }
+
+// ###############################################################################################################
+// ###############################################################################################################
+// ###############################################################################################################
+
 
 void BipedalController::setupMpc(){
   ::ros::NodeHandle nh;

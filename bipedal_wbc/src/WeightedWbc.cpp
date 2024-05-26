@@ -35,6 +35,14 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
   ubA << constraints.b_,
          constraints.f_;  // clang-format on
 
+  // debug print A, lbA, ubA
+  std::cerr << "A: " << std::endl;
+  std::cerr << A << std::endl;
+  std::cerr << "lbA: " << std::endl;
+  std::cerr << lbA << std::endl;
+  std::cerr << "ubA: " << std::endl;
+  std::cerr << ubA << std::endl;
+
   // Cost
   Task weighedTask = formulateWeightedTasks(stateDesired, inputDesired, period);
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> H = weighedTask.a_.transpose() * weighedTask.a_;
@@ -57,7 +65,11 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
 }
 
 Task WeightedWbc::formulateConstraints() {
-  return formulateFloatingBaseEomTask() + formulateTorqueLimitsTask() + formulateFrictionConeTask() + formulateContactNoMotionTask();
+  return formulateFloatingBaseEomTask() 
+        + formulateTorqueLimitsTask() 
+        + formulateFrictionConeTask() 
+        + formulateContactNoMotionTask()
+        ;
 }
 
 Task WeightedWbc::formulateWeightedTasks(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period) {

@@ -1,15 +1,40 @@
 <launch>
+
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
     <param name="bipedal_robot_description" textfile="$(find legged_hunter_description)/urdf/hunter.urdf"/>
     <param name="bipedal_robot_description_sim" textfile="$(find legged_hunter_description)/urdf/hunter_sim.urdf"/>
 
     <rosparam file="$(find bipedal_gazebo)/config/default.yaml" command="load"/>
-    <include file="$(find bipedal_gazebo)/launch/empty_world.launch">
+    <!-- <include file="$(find bipedal_gazebo)/launch/empty_world.launch">
         <arg name="world_name" value="$(find bipedal_gazebo)/worlds/empty_world.world"/>
+    </include> -->
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find bipedal_gazebo)/worlds/empty_world.world"/>
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
     </include>
 
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" clear_params="true" 
-        args="-z 0.7 -param bipedal_robot_description_sim -urdf -model hunter " output="screen"/>
+        args="-z 0.64 -param bipedal_robot_description_sim -urdf -model hunter -J leg_l4_joint 0.93
+        -J leg_l1_joint 0.10
+        -J leg_l2_joint 0.00
+        -J leg_l3_joint 0.40
+        -J leg_l5_joint 0.53
+        -J leg_r1_joint -0.10
+        -J leg_r2_joint 0.00
+        -J leg_r3_joint -0.40
+        -J leg_r4_joint 0.93
+        -J leg_r5_joint -0.53" output="screen"/>
 
 
 </launch>

@@ -21,7 +21,7 @@
 
     <!-- rviz -->
     <group if="$(arg rviz)">
-        <param name="$(arg description_name)" textfile="$(arg urdfFile)"/>
+        <!-- <param name="$(arg description_name)" textfile="$(arg urdfFile)"/> -->
         <arg name="rvizconfig" default="$(find ocs2_bipedal_robot_ros)/rviz/bipedal_robot.rviz" />
         <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rvizconfig)" output="screen" />
       </group>
@@ -33,7 +33,8 @@
     <node name="controller_loader" pkg="controller_manager" type="controller_manager"
         output="screen" args="load
         controllers/joint_state_controller
-        controllers/joint_pos_controller"/>
+        controllers/init_joint_pos_controller
+        controllers/bipedal_controller"/>
 
     <!-- target trajectories publisher -->
     <node name="bipedal_robot_target" pkg="bipedal_controllers" type="bipedal_target_trajectories_publisher" output="screen"/>

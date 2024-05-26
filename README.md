@@ -20,6 +20,11 @@ mkdir -p ~/bipedal_ws/src
 cd ~/bipedal_ws/src
 ```
 
+others:
+```bash
+sudo apt install ros-noetic-effort-controllers
+```
+
 ## OCS2
 
 OCS2 is a huge monorepo; **DO NOT** try to compile the whole repo. You only need to compile `ocs2_legged_robot_ros` and

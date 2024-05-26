@@ -1,4 +1,4 @@
-centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
   
 bipedal_robot_interface
 {
@@ -277,11 +277,11 @@ frictionConeSoftConstraint
 ; Whole body control
 torqueLimitsTask
 {
-  (0,0)  500     ; hip_yaw
-  (1,0)  500     ; hip_roll
-  (2,0)  500     ; hip_pitch
-  (3,0)  500     ; knee
-  (4,0)  500     ; ankle
+  (0,0)  5000     ; hip_yaw
+  (1,0)  5000     ; hip_roll
+  (2,0)  5000     ; hip_pitch
+  (3,0)  5000     ; knee
+  (4,0)  5000     ; ankle
 }
 
 frictionConeTask

@@ -294,8 +294,8 @@ Task WbcBase::formulateTorqueLimitsTask() {
   matrix_t d(2 * info_.actuatedDofNum, numDecisionVars_);
   d.setZero();
   matrix_t i = matrix_t::Identity(info_.actuatedDofNum, info_.actuatedDofNum);
-  d.block(0, info_.generalizedCoordinatesNum + 3 * info_.numThreeDofContacts + 6 * info_.numSixDofContacts, info_.actuatedDofNum, info_.actuatedDofNum) = i;
-  d.block(info_.actuatedDofNum, info_.generalizedCoordinatesNum + 3 * info_.numThreeDofContacts + 6 * info_.numSixDofContacts, info_.actuatedDofNum,
+  d.block(0, info_.generalizedCoordinatesNum + 3 * info_.numThreeDofContacts, info_.actuatedDofNum, info_.actuatedDofNum) = i;
+  d.block(info_.actuatedDofNum, info_.generalizedCoordinatesNum + 3 * info_.numThreeDofContacts, info_.actuatedDofNum,
           info_.actuatedDofNum) = -i;
   vector_t f(2 * info_.actuatedDofNum);
   int numJointsPerLeg = info_.actuatedDofNum / 2;

@@ -13,4 +13,12 @@
             The basic legged controller with cheat state estimator
         </description>
     </class> -->
+
+    <class name="bipedal_robot/InitialJointController" type="ocs2::bipedal_robot::InitialJointPositionController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The controller for robot initialization
+        </description>
+    </class>
+
 </library>

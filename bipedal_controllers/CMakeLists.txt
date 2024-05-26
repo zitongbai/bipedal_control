@@ -20,6 +20,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   controller_interface
   angles
+  control_msgs
+  control_toolbox
+  realtime_tools
+  urdf
 )
 
 find_package(PkgConfig REQUIRED)
@@ -140,6 +144,7 @@ link_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/BipedalController.cpp
+  src/InitialJointController.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -148,6 +153,17 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
+
+# add_library(initial_joint_controller
+#   src/InitialJointController.cpp
+# )
+
+# target_link_libraries(initial_joint_controller
+#         ${catkin_LIBRARIES}
+#         ${pinocchio_LIBRARIES}
+# )
+
+# target_compile_options(initial_joint_controller PUBLIC ${OCS2_CXX_FLAGS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
