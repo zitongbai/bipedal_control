@@ -57,10 +57,24 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
   qpProblem.setOptions(options);
   int nWsr = 20;
 
+  // debug
+  std::cerr << "[WeightedWbc] try to solve QP" << std::endl;
+
   qpProblem.init(H.data(), g.data(), A.data(), nullptr, nullptr, lbA.data(), ubA.data(), nWsr);
   vector_t qpSol(getNumDecisionVars());
 
   qpProblem.getPrimalSolution(qpSol.data());
+  if(qpProblem.isSolved()){
+    // debug print
+    std::cerr << "qpSol: ";
+    std::cerr << qpSol.transpose() << std::endl;
+    // save to lastQpSol_
+    lastQpSol_ = qpSol;
+  } else {
+    std::cerr << "[WeightedWbc] QP not solved !!!" << std::endl;
+    qpSol.setZero(getNumDecisionVars());
+  }
+
   return qpSol;
 }
 
@@ -68,7 +82,7 @@ Task WeightedWbc::formulateConstraints() {
   return formulateFloatingBaseEomTask() 
         + formulateTorqueLimitsTask() 
         + formulateFrictionConeTask() 
-        + formulateContactNoMotionTask()
+        // + formulateContactNoMotionTask()
         ;
 }
 

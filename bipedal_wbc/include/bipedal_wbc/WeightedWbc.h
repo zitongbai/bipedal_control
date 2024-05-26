@@ -18,7 +18,9 @@ namespace bipedal_robot {
 class WeightedWbc : public WbcBase {
 public:
     explicit WeightedWbc(const PinocchioInterface& pinocchioInterface, CentroidalModelInfo info, const PinocchioEndEffectorKinematics& eeKinematics)
-        : WbcBase(pinocchioInterface, info, eeKinematics) {};
+        : WbcBase(pinocchioInterface, info, eeKinematics) {
+            lastQpSol_.setZero(getNumDecisionVars());
+        };
     /**
      * @brief update the desired state, input, and measured state
      *  then solve the problem
@@ -42,6 +44,7 @@ protected:
 
 private:
     scalar_t weightSwingLeg_, weightBaseAccel_, weightContactForce_;
+    vector_t lastQpSol_;
 
 
 };

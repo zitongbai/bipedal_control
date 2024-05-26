@@ -194,7 +194,7 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
   for (size_t j = 0; j < jointNum; ++j) {
-    hybridJointHandles_[j].setCommand(posDes(j), velDes(j), 0, 3, torque(j));
+    hybridJointHandles_[j].setCommand(posDes(j), velDes(j), 10, 3, torque(j));
   }
 
   // TODO: self collision visualization

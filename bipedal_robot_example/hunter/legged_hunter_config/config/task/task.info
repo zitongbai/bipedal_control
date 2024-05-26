@@ -277,11 +277,11 @@ frictionConeSoftConstraint
 ; Whole body control
 torqueLimitsTask
 {
-  (0,0)  5000     ; hip_yaw
-  (1,0)  5000     ; hip_roll
-  (2,0)  5000     ; hip_pitch
-  (3,0)  5000     ; knee
-  (4,0)  5000     ; ankle
+  (0,0)  100.0     ; hip_yaw
+  (1,0)  100.0     ; hip_roll
+  (2,0)  100.0     ; hip_pitch
+  (3,0)  100.0     ; knee
+  (4,0)  100.0     ; ankle
 }
 
 frictionConeTask
@@ -297,7 +297,7 @@ swingLegTask
 
 weight
 {
-    swingLeg        100
-    baseAccel       1
+    swingLeg        50
+    baseAccel       10
     contactForce    0.01
 }
