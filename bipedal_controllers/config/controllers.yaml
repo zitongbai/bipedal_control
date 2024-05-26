@@ -4,6 +4,26 @@ controllers:
     publish_rate: 100
   bipedal_controller:
     type: bipedal_robot/BipedalController
+    leg_l1_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_l2_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_l3_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_l4_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_l5_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_r1_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_r2_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_r3_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_r4_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
+    leg_r5_joint:
+      pid: {p: 100.0, i: 0.0, d: 3}
   init_joint_pos_controller:
     type: bipedal_robot/InitialJointController
     joints:

@@ -61,6 +61,7 @@ public:
   Task formulateContactNoMotionTask();
   Task formulateFrictionConeTask();
   Task formulateBaseAccelTask(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period);
+  Task formulateStanceBaseAccelTask();
   Task formulateSwingLegTask();
   Task formulateContactForceTask(const vector_t& inputDesired) const;
 

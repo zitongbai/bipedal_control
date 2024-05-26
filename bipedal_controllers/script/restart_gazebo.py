@@ -26,7 +26,7 @@ def restart_gazebo():
         req = SwitchControllerRequest()
         req.start_controllers = ['controllers/init_joint_pos_controller']  # List of controllers to start
         req.stop_controllers = ['controllers/bipedal_controller']  # List of controllers to stop
-        req.strictness = 0
+        req.strictness = 1
         req.start_asap = False
         req.timeout = 0.0
         
@@ -37,7 +37,7 @@ def restart_gazebo():
         else:
             rospy.logwarn('Controller switch 1 failed')
         
-        time.sleep(1.5)
+        time.sleep(2.0)
         
         # -------------------------------------------------------------------
         # First we should reset the gazebo simulation

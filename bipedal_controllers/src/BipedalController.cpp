@@ -97,6 +97,20 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
 
   safetyChecker_ = std::make_shared<SafetyChecker>(bipedalInterface_->getCentroidalModelInfo());
 
+  // low level controller (pid)
+  // mainly use its dynamic reconfigure interface
+  // i am too lazy to implement my own dynamic reconfigure interface(
+  // left leg joints have the same pid gains as the right leg joints
+  // thus we only need legJointNames.size()/2
+  pidControllers_.resize(size_t(legJointNames.size()/2));
+  for (size_t i=0; i<size_t(legJointNames.size()/2); i++){
+    auto success = pidControllers_[i].init(ros::NodeHandle(controller_nh, legJointNames[i] + "/pid"));
+    if (!success){
+      ROS_ERROR_STREAM("[BipedalController] Failed to initialize pid controller for joint " << legJointNames[i]);
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -190,11 +204,20 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // low level control
   auto jointNum = bipedalInterface_->getCentroidalModelInfo().actuatedDofNum;
   vector_t torque = x.tail(jointNum);
+  vector_t wbcJointAcc = x.segment(6, jointNum);
+
   vector_t posDes = centroidal_model::getJointAngles(optimizedState, bipedalInterface_->getCentroidalModelInfo());
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
+  scalar_t dt = time.toSec();
+  posDes = posDes + 0.5* wbcJointAcc * dt * dt;
+  velDes = velDes + wbcJointAcc * dt;
+
   for (size_t j = 0; j < jointNum; ++j) {
-    hybridJointHandles_[j].setCommand(posDes(j), velDes(j), 10, 3, torque(j));
+    size_t pid_idx = j >= jointNum/2 ? j - jointNum/2 : j;
+    scalar_t kp = pidControllers_[pid_idx].getGains().p_gain_;
+    scalar_t kd = pidControllers_[pid_idx].getGains().d_gain_;
+    hybridJointHandles_[j].setCommand(posDes(j), velDes(j), kp, kd, torque(j));
   }
 
   // TODO: self collision visualization

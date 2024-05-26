@@ -141,7 +141,7 @@ void WbcBase::updateDesired(const vector_t& stateDesired, const vector_t& inputD
 }
 
 /********************************************************************************************/
-/* Equality Tasks */
+/* Equality Constraints */
 /* For more details, refer to README.md */
 /********************************************************************************************/
 
@@ -176,6 +176,7 @@ Task WbcBase::formulateContactNoMotionTask() {
   return {a, b, matrix_t(), vector_t()};
 }
 
+
 Task WbcBase::formulateBaseAccelTask(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period) {
   matrix_t a(6, numDecisionVars_);
   a.setZero();
@@ -200,6 +201,17 @@ Task WbcBase::formulateBaseAccelTask(const vector_t& stateDesired, const vector_
   centroidalMomentumRate.noalias() -= Aj * jointAccel;
 
   Vector6 b = AbInv * centroidalMomentumRate;
+
+  return {a, b, matrix_t(), vector_t()};
+}
+
+Task WbcBase::formulateStanceBaseAccelTask(){
+  matrix_t a(6, numDecisionVars_);
+  a.setZero();
+  a.block(0, 0, 6, 6) = matrix_t::Identity(6, 6);
+
+  Vector6 b;
+  b.setZero();
 
   return {a, b, matrix_t(), vector_t()};
 }

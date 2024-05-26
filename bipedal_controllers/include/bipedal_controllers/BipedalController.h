@@ -18,7 +18,7 @@
 #include <bipedal_common/hardware_interface/ContactSensorInterface.h>
 #include <bipedal_common/hardware_interface/HybridJointInterface.h>
 #include <bipedal_estimation/StateEstimateBase.h>
-#include <bipedal_wbc/WbcBase.h>
+#include <bipedal_wbc/WeightedWbc.h>
 #include <ocs2_bipedal_robot/BipedalRobotInterface.h>
 #include <ocs2_bipedal_robot_ros/visualization/BipedalRobotVisualizer.h>
 #include <bipedal_controllers/SafetyChecker.h>
@@ -27,6 +27,7 @@
 #include <ocs2_core/misc/Benchmark.h>
 #include <ocs2_mpc/MPC_MRT_Interface.h>
 
+#include <control_toolbox/pid.h>
 
 namespace ocs2{
 namespace bipedal_robot{
@@ -39,7 +40,10 @@ public:
   bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& controller_nh) override;
   void update(const ros::Time& time, const ros::Duration& period) override;
   void starting(const ros::Time& time) override;
-  void stopping(const ros::Time& /*time*/) override { mpcRunning_ = false; }
+  void stopping(const ros::Time& /*time*/) override { 
+    mpcRunning_ = false; 
+    wbc_->clearLastQpSol();
+  }
 
   const std::string robotName_ = "bipedal_robot";
 
@@ -74,7 +78,7 @@ protected:
   std::shared_ptr<CentroidalModelRbdConversions> rbdConversions_;
 
   // Whole Body Control
-  std::shared_ptr<WbcBase> wbc_;
+  std::shared_ptr<WeightedWbc> wbc_;
   std::shared_ptr<SafetyChecker> safetyChecker_;
 
   // NMPC
@@ -84,6 +88,9 @@ protected:
   // Visualization
   std::shared_ptr<BipedalRobotVisualizer> robotVisualizer_;
   ros::Publisher observationPublisher_;
+
+  // low-level controller
+  std::vector<control_toolbox::Pid> pidControllers_;
 
 private:
   std::thread mpcThread_;

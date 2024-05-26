@@ -13,6 +13,8 @@
 #pragma once
 
 #include "bipedal_wbc/WbcBase.h"
+#include <ocs2_bipedal_robot/gait/MotionPhaseDefinition.h>
+
 namespace ocs2{
 namespace bipedal_robot {
 class WeightedWbc : public WbcBase {
@@ -37,6 +39,7 @@ public:
 
     void loadTasksSetting(const std::string& taskFile, bool verbose) override;
 
+    void clearLastQpSol() { lastQpSol_.setZero(getNumDecisionVars()); }
 
 protected:
     virtual Task formulateConstraints();
@@ -45,6 +48,7 @@ protected:
 private:
     scalar_t weightSwingLeg_, weightBaseAccel_, weightContactForce_;
     vector_t lastQpSol_;
+    size_t plannedMode_ = ModeNumber::STANCE;
 
 
 };

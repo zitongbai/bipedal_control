@@ -20,6 +20,7 @@ namespace bipedal_robot {
 vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& inputDesired, const vector_t& rbdStateMeasured, size_t mode,
                              scalar_t period) {
   WbcBase::update(stateDesired, inputDesired, rbdStateMeasured, mode, period);
+  plannedMode_ = mode;
 
   // Constraints
   Task constraints = formulateConstraints();
@@ -67,12 +68,15 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
   if(qpProblem.isSolved()){
     // debug print
     std::cerr << "qpSol: ";
-    std::cerr << qpSol.transpose() << std::endl;
+    std::cerr << "dot_v: " << qpSol.segment(0, 16).transpose() << std::endl;
+    std::cerr << "F: " << qpSol.segment(16, 12).transpose() << std::endl;
+    std::cerr << "tau: " << qpSol.segment(28, 10).transpose() << std::endl;
     // save to lastQpSol_
     lastQpSol_ = qpSol;
   } else {
     std::cerr << "[WeightedWbc] QP not solved !!!" << std::endl;
-    qpSol.setZero(getNumDecisionVars());
+    // qpSol.setZero(getNumDecisionVars());
+    qpSol = lastQpSol_;
   }
 
   return qpSol;
@@ -87,8 +91,12 @@ Task WeightedWbc::formulateConstraints() {
 }
 
 Task WeightedWbc::formulateWeightedTasks(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period) {
-  return formulateSwingLegTask() * weightSwingLeg_ + formulateBaseAccelTask(stateDesired, inputDesired, period) * weightBaseAccel_ +
-         formulateContactForceTask(inputDesired) * weightContactForce_;
+  if (plannedMode_ == ModeNumber::STANCE) {
+    return formulateStanceBaseAccelTask();
+  } else {
+    return formulateSwingLegTask() * weightSwingLeg_ + formulateBaseAccelTask(stateDesired, inputDesired, period) * weightBaseAccel_ +
+          formulateContactForceTask(inputDesired) * weightContactForce_;
+  }
 }
 
 void WeightedWbc::loadTasksSetting(const std::string& taskFile, bool verbose) {
