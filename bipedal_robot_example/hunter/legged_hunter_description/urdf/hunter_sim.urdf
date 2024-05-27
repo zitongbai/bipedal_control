@@ -13,13 +13,14 @@
       <robotNamespace>/</robotNamespace>
       <robotParam>bipedal_robot_description</robotParam>
       <robotSimType>bipedal_gazebo/BipedalHWSim</robotSimType>
+      <!-- <controlPeriod>0.002</controlPeriod> -->
     </plugin>
   </gazebo>
 
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
       <alwaysOn>true</alwaysOn>
-      <updateRate>500.0</updateRate>
+      <updateRate>1000.0</updateRate>
       <bodyName>base_link</bodyName>
       <topicName>ground_truth/state</topicName>
       <gaussianNoise>0</gaussianNoise>

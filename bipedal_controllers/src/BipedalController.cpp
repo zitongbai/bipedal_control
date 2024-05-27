@@ -119,22 +119,31 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
 }
 
 void BipedalController::starting(const ros::Time& time){
+
   // initial state 
   currentObservation_.state.setZero(bipedalInterface_->getCentroidalModelInfo().stateDim);
   updateStateEstimation(time, ros::Duration(0.002));
   currentObservation_.input.setZero(bipedalInterface_->getCentroidalModelInfo().inputDim);
   currentObservation_.mode = ModeNumber::STANCE;
 
-  // // debug: print initial observation state
-  // std::cerr << "===============================================================" << std::endl;
-  // std::cerr << "initialObservation state: " << currentObservation_.state.transpose() << std::endl;
-  // std::cerr << "===============================================================" << std::endl;
+  // debug: print initial observation state
+  std::cerr << "===============================================================" << std::endl;
+  std::cerr << "initial observation" << std::endl;
+  std::cerr << "time: " << currentObservation_.time << std::endl;
+  std::cerr << "base xyz " << currentObservation_.state.segment(6, 3).transpose() << std::endl;
+  std::cerr << "base euler zyx " << currentObservation_.state.segment(9, 3).transpose() << std::endl;
+  std::cerr << "left leg joints " << currentObservation_.state.segment(12, 5).transpose() << std::endl;
+  std::cerr << "right leg joints " << currentObservation_.state.segment(17, 5).transpose() << std::endl;
+  std::cerr << "===============================================================" << std::endl;
   
 
   // initial target trajectories
   auto init_target_traj_state = bipedalInterface_->getInitialState();
 
-  TargetTrajectories target_trajectories({currentObservation_.time}, {init_target_traj_state}, {currentObservation_.input});
+  TargetTrajectories target_trajectories({currentObservation_.time}, {currentObservation_.state}, {currentObservation_.input});
+
+  mpcMrtInterface_->reset();
+  mpcMrtInterface_->resetMpcNode(target_trajectories);
 
   // Set the first observation and command and wait for optimization to finish
   ROS_INFO_STREAM("Waiting for the initial policy ...");
@@ -146,15 +155,21 @@ void BipedalController::starting(const ros::Time& time){
   }
   ROS_INFO_STREAM("Initial policy has been received.");
 
-  // // debug: print initial optimized state and input
-  // mpcMrtInterface_->updatePolicy();
-  // vector_t initialOptimizedState, initialOptimizedInput;
-  // size_t plannedMode = 0;
-  // mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, initialOptimizedState, initialOptimizedInput, plannedMode);
-  // std::cerr << "===============================================================" << std::endl;
-  // std::cerr << "initialOptimizedState: " << initialOptimizedState.transpose() << std::endl;
-  // std::cerr << "initialOptimizedInput: " << initialOptimizedInput.transpose() << std::endl;
-  // std::cerr << "===============================================================" << std::endl;
+  // debug: print initial optimized state and input
+  mpcMrtInterface_->updatePolicy();
+  vector_t initialOptimizedState, initialOptimizedInput;
+  size_t plannedMode = 0;
+  mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, initialOptimizedState, initialOptimizedInput, plannedMode);
+  std::cerr << "===============================================================" << std::endl;
+  std::cerr << "initialOptimizedState: " << std::endl;
+  std::cerr << "base xyz " << initialOptimizedState.segment(6, 3).transpose() << std::endl;
+  std::cerr << "base euler zyx " << initialOptimizedState.segment(9, 3).transpose() << std::endl;
+  std::cerr << "left leg joints " << initialOptimizedState.segment(12, 5).transpose() << std::endl;
+  std::cerr << "right leg joints " << initialOptimizedState.segment(17, 5).transpose() << std::endl;
+  std::cerr << "initialOptimizedInput: " << std::endl;
+  std::cerr << "contact forces " << initialOptimizedInput.segment(0, 12).transpose() << std::endl;
+  std::cerr << "joint velocity " << initialOptimizedInput.segment(12, 10).transpose() << std::endl;
+  std::cerr << "===============================================================" << std::endl;
 
   mpcRunning_ = true;
 }
