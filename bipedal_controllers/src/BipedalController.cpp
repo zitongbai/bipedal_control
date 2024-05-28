@@ -100,6 +100,7 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
   safetyChecker_ = std::make_shared<SafetyChecker>(bipedalInterface_->getCentroidalModelInfo());
 
   // lowlevel controller
+  defaultJointState_ = centroidal_model::loadDefaultJointState(legJointNames.size(), referenceFile);
   jointKp_.resize(legJointNames.size(), 0.0);
   jointKd_.resize(legJointNames.size(), 0.0);
   debugControlCmdPublisher_ = nh.advertise<sensor_msgs::JointState>(robotName_+"_joint_cmd_debug", 1);
@@ -191,6 +192,8 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   size_t plannedMode = 0;  // The mode that is active at the time the policy is evaluated at.
   mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, optimizedState, optimizedInput, plannedMode);
 
+  ROS_INFO_THROTTLE(1.0, "Mode: %zu", plannedMode);
+
   currentObservation_.input = optimizedInput;
   // visualization
   robotVisualizer_->update(currentObservation_, mpcMrtInterface_->getPolicy(), mpcMrtInterface_->getCommand());
@@ -205,6 +208,13 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // std::cerr << "plannedMode: " << plannedMode << std::endl;
   // std::cerr << "period: " << period.toSec() << std::endl;
   // std::cerr << "===============================================================" << std::endl;
+
+  if(plannedMode == ModeNumber::STANCE){
+    optimizedState.setZero();
+    optimizedInput.setZero();
+    optimizedState.segment(6, 6) = currentObservation_.state.segment<6>(6);
+    optimizedState.segment(6 + 6, bipedalInterface_->getCentroidalModelInfo().actuatedDofNum) = defaultJointState_;
+  }
 
   // Whole body control
   wbcTimer_.startTimer();
@@ -225,9 +235,9 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   vector_t posDes = centroidal_model::getJointAngles(optimizedState, bipedalInterface_->getCentroidalModelInfo());
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
-  // scalar_t dt = period.toSec();
-  // posDes = posDes + 0.5* wbcJointAcc * dt * dt;
-  // velDes = velDes + wbcJointAcc * dt;
+  scalar_t dt = period.toSec();
+  posDes = posDes + 0.5* wbcJointAcc * dt * dt;
+  velDes = velDes + wbcJointAcc * dt;
 
   for (size_t j = 0; j < jointNum; ++j) {
     scalar_t kp = jointKp_[j];

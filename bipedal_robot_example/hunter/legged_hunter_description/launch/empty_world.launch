@@ -25,7 +25,7 @@
 
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" clear_params="true" 
-        args="-z 0.64 -param bipedal_robot_description_sim -urdf -model hunter -J leg_l4_joint 0.93
+        args="-z 0.65 -param bipedal_robot_description_sim -urdf -model hunter -J leg_l4_joint 0.93
         -J leg_l1_joint 0.10
         -J leg_l2_joint 0.00
         -J leg_l3_joint 0.40

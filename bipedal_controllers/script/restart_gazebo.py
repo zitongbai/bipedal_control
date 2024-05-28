@@ -48,7 +48,7 @@ def restart_gazebo():
         else:
             rospy.logwarn('Gazebo simulation reset failed')
           
-            
+        # input('Press Enter to continue...')
         # -------------------------------------------------------------------
         # Then switch to bipedal controller
         # -------------------------------------------------------------------

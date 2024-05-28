@@ -87,13 +87,17 @@ Task WeightedWbc::formulateConstraints() {
   return formulateFloatingBaseEomTask() 
         + formulateTorqueLimitsTask() 
         + formulateFrictionConeTask() 
-        + formulateContactNoMotionTask()
+        // + formulateContactNoMotionTask()
         ;
 }
 
 Task WeightedWbc::formulateWeightedTasks(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period) {
+  if (plannedMode_ == ModeNumber::STANCE){
+    return formulateStanceBaseAccelTask()* weightBaseAccel_;
+  } else {
     return formulateSwingLegTask() * weightSwingLeg_ + formulateBaseAccelPDTask(stateDesired, inputDesired, period) * weightBaseAccel_ +
-          formulateContactForceTask(inputDesired) * weightContactForce_;
+            formulateContactForceTask(inputDesired) * weightContactForce_;
+  }
 }
 
 void WeightedWbc::loadTasksSetting(const std::string& taskFile, bool verbose) {

@@ -226,8 +226,8 @@ Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired,
   a.setZero();
   a.block(0, 0, 6, 6) = matrix_t::Identity(6, 6);
 
-  // set base Jacobian in a
-  a.block(3, 0, 3, info_.generalizedCoordinatesNum) = baseJ_.block(3, 0, 3, info_.generalizedCoordinatesNum);
+  // // set base Jacobian in a
+  // a.block(3, 0, 3, info_.generalizedCoordinatesNum) = baseJ_.block(3, 0, 3, info_.generalizedCoordinatesNum);
 
   // joint acceleration
   vector_t jointAccel = centroidal_model::getJointVelocities(inputDesired - inputLast_, info_) / period;
@@ -262,13 +262,14 @@ Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired,
   vector3_t baseAngularVelocityError = desiredBaseVelocity.head<3>(3) - measuredBaseVelocity.head<3>(3);
 
   Vector6 b;
+  b.setZero();
   b.head<3>() = desiredBaseAcceleration.head<3>() 
           + baseKp_.head<3>().cwiseProduct(basePositionError) 
           + baseKd_.head<3>().cwiseProduct(baselLinearVelocityError);
-  b.tail<3>() = desiredBaseAcceleration.tail<3>() 
-          + baseKp_.tail<3>().cwiseProduct(baseOrientationError) 
-          + baseKd_.tail<3>().cwiseProduct(baseAngularVelocityError)
-          - baseDj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+  // b.tail<3>() = desiredBaseAcceleration.tail<3>() 
+  //         + baseKp_.tail<3>().cwiseProduct(baseOrientationError) 
+  //         + baseKd_.tail<3>().cwiseProduct(baseAngularVelocityError)
+  //         - baseDj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
 
   return {a, b, matrix_t(), vector_t()};
 }

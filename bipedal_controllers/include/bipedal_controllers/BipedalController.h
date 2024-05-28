@@ -97,7 +97,7 @@ protected:
   // low-level controller
   // std::vector<control_toolbox::Pid> pidControllers_;
   std::vector<scalar_t> jointKp_, jointKd_;
-  
+  vector_t defaultJointState_;
   ros::Publisher debugControlCmdPublisher_;
 
   // dynamic reconfigure
