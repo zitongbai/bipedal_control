@@ -228,9 +228,9 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   vector_t posDes = centroidal_model::getJointAngles(optimizedState, bipedalInterface_->getCentroidalModelInfo());
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
-  scalar_t dt = period.toSec();
-  posDes = posDes + 0.5* wbcJointAcc * dt * dt;
-  velDes = velDes + wbcJointAcc * dt;
+  // scalar_t dt = period.toSec();
+  // posDes = posDes + 0.5* wbcJointAcc * dt * dt;
+  // velDes = velDes + wbcJointAcc * dt;
 
   for (size_t j = 0; j < jointNum; ++j) {
     // size_t pid_idx = j >= jointNum/2 ? j - jointNum/2 : j;

@@ -55,7 +55,9 @@ private:
     // ros control interface
     std::vector<HybridJointHandle> jointHandles_;
 
-    std::vector<control_toolbox::Pid::Gains> pid_gains_;
+    // std::vector<control_toolbox::Pid::Gains> pid_gains_;
+    std::vector<control_toolbox::Pid> pidControllers_;
+
 
     void enforceJointLimits(double &command, size_t index);
     

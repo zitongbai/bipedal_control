@@ -90,7 +90,6 @@ bool InitialJointPositionController::init(HybridJointInterface* hw, ros::NodeHan
 
   // ros control
   jointHandles_.clear();
-  pid_gains_.resize(numJoints_);
   for(size_t i = 0; i < numJoints_; i++){
     // load joints handle
     try{
@@ -99,11 +98,18 @@ bool InitialJointPositionController::init(HybridJointInterface* hw, ros::NodeHan
       ROS_ERROR_STREAM("[InitialJointPositionController] " << e.what());
       return false;
     }
-    // load pid controllers using gains set on parameter server
-    auto pid_nh = ros::NodeHandle(nh, jointNames_[i] + "/pid");
-    pid_nh.getParam("p", pid_gains_[i].p_gain_);
-    pid_nh.getParam("i", pid_gains_[i].i_gain_);
-    pid_nh.getParam("d", pid_gains_[i].d_gain_);
+  }
+
+  // pid controllers
+  // use pid in control_toolbox
+  // mainly for dynamic reconfigure
+  pidControllers_.resize(size_t(numJoints_/2));
+  for(size_t i=0; i<size_t(numJoints_/2); i++){
+    auto success = pidControllers_[i].init(ros::NodeHandle(nh, jointNames_[i] + "/pid"));
+    if(!success){
+      ROS_ERROR_STREAM("[InitialJointPositionController] Failed to initialize PID controller for joint " << jointNames_[i]);
+      return false;
+    }
   }
 
   return true;
@@ -123,14 +129,16 @@ void InitialJointPositionController::update(const ros::Time& time, const ros::Du
 
     // make sure joint is within limits
     enforceJointLimits(desired_pos, i);
-    
-    scalar_t kp = pid_gains_[i].p_gain_;
-    scalar_t kd = pid_gains_[i].d_gain_;
+
+    size_t pid_idx = i < numJoints_/2 ? i : i - numJoints_/2;
+    scalar_t kp = pidControllers_[pid_idx].getGains().p_gain_;
+    scalar_t kd = pidControllers_[pid_idx].getGains().d_gain_;
 
     jointHandles_[i].setCommand(desired_pos, 0.0, kp, kd, 0.0);
 
-    // std::cerr << "Joint " << jointNames_[i] << " desired_pos: " << desired_pos << " current_pos: " << current_pos << " commanded_effort: " << commanded_effort << std::endl;
+    // std::cerr << "Joint " << jointNames_[i] << " desired_pos: " << desired_pos ;
   }
+  // std::cerr << std::endl;
 }
 
 // ###############################################################################################################

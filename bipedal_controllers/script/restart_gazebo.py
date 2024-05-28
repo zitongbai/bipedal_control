@@ -52,7 +52,7 @@ def restart_gazebo():
         # -------------------------------------------------------------------
         # Then switch to bipedal controller
         # -------------------------------------------------------------------
-        time.sleep(0.5)
+        time.sleep(0.05)
         req.start_controllers = ['controllers/bipedal_controller']  # List of controllers to start
         req.stop_controllers = ['controllers/init_joint_pos_controller']  # List of controllers to stop
         

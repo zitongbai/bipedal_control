@@ -17,7 +17,7 @@
 #include <ocs2_centroidal_model/PinocchioCentroidalDynamics.h>
 #include <ocs2_bipedal_robot/gait/MotionPhaseDefinition.h>
 #include <ocs2_pinocchio_interface/PinocchioEndEffectorKinematics.h>
-
+#include <ocs2_centroidal_model/CentroidalModelRbdConversions.h>
 
 namespace ocs2{
 namespace bipedal_robot{
@@ -62,6 +62,11 @@ public:
   Task formulateFrictionConeTask();
   Task formulateBaseAccelTask(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period);
   Task formulateStanceBaseAccelTask();
+  Task formulateBaseAccelPDTask(const vector_t& stateDesired, 
+                                const vector_t& inputDesired, 
+                                scalar_t period, 
+                                const Vector6& pGains, 
+                                const Vector6& dGains);
   Task formulateSwingLegTask();
   Task formulateContactForceTask(const vector_t& inputDesired) const;
 
@@ -74,6 +79,7 @@ public:
   size_t numDecisionVars_;
   PinocchioInterface pinocchioInterfaceMeasured_, pinocchioInterfaceDesired_;
   CentroidalModelInfo info_;
+  CentroidalModelRbdConversions rbdConversions_;
 
   std::unique_ptr<PinocchioEndEffectorKinematics> eeKinematics_;
   CentroidalModelPinocchioMapping mapping_;

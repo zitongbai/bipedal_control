@@ -75,6 +75,7 @@ protected:
   SystemObservation currentObservation_;
   vector_t measuredRbdState_; // length: 2 * generalized coordinate
   std::shared_ptr<StateEstimateBase> stateEstimate_;
+  
   std::shared_ptr<CentroidalModelRbdConversions> rbdConversions_;
 
   // Whole Body Control

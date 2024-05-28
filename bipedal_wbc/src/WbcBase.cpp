@@ -21,6 +21,7 @@
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/rnea.hpp>
 #include <utility>
+#include <ocs2_robotic_tools/common/RotationTransforms.h>
 
 namespace ocs2{
 namespace bipedal_robot{
@@ -29,6 +30,7 @@ WbcBase::WbcBase(const PinocchioInterface& pinocchioInterface, CentroidalModelIn
     : pinocchioInterfaceMeasured_(pinocchioInterface),
       pinocchioInterfaceDesired_(pinocchioInterface),
       info_(std::move(info)),
+      rbdConversions_(pinocchioInterface, info_),
       mapping_(info_),
       inputLast_(vector_t::Zero(info_.inputDim)),
       eeKinematics_(eeKinematics.clone()) {
@@ -202,6 +204,57 @@ Task WbcBase::formulateBaseAccelTask(const vector_t& stateDesired, const vector_
 
   Vector6 b = AbInv * centroidalMomentumRate;
 
+  return {a, b, matrix_t(), vector_t()};
+}
+
+Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired, 
+                                const vector_t& inputDesired, 
+                                scalar_t period, 
+                                const Vector6& pGains, 
+                                const Vector6& dGains){
+  matrix_t a(6, numDecisionVars_);
+  a.setZero();
+  a.block(0, 0, 6, 6) = matrix_t::Identity(6, 6);
+
+  // joint acceleration
+  vector_t jointAccel = centroidal_model::getJointVelocities(inputDesired - inputLast_, info_) / period;
+  inputLast_ = inputDesired;
+
+  // desired base pose, velocity, and acceleration in world frame
+  // basePose: [base position, base orientation (EulerAngles-ZYX)] expressed in the world frame
+  // baseVelocity: [base linear velocity, base angular velocity] expressed in the world frame
+  // baseAcceleration: [base linear acceleration, base angular acceleration] expressed in the world frame
+  Vector6 desiredBasePose, desiredBaseVelocity, desiredBaseAcceleration;
+  rbdConversions_.computeBaseKinematicsFromCentroidalModel(
+    stateDesired, inputDesired, jointAccel,   // in 
+    desiredBasePose, desiredBaseVelocity, desiredBaseAcceleration // out
+  );
+  
+  // measured base pose, velocity in world frame
+  Vector6 measuredBasePose, measuredBaseVelocity;
+  measuredBasePose = qMeasured_.segment<6>(0);
+  measuredBaseVelocity = vMeasured_.segment<6>(0);
+  // convert to angular velocity from time derivative of euler angles zyx
+  measuredBaseVelocity.segment<3>(3) = getGlobalAngularVelocityFromEulerAnglesZyxDerivatives<scalar_t>(
+    measuredBasePose.segment<3>(3), measuredBaseVelocity.segment<3>(3)
+  );
+
+  vector3_t basePositionError = desiredBasePose.head<3>() - measuredBasePose.head<3>();
+  vector3_t baselLinearVelocityError = desiredBaseVelocity.head<3>() - measuredBaseVelocity.head<3>();
+  
+  vector3_t baseOrientationError = rotationErrorInWorld<scalar_t>(
+    getRotationMatrixFromZyxEulerAngles<scalar_t>(desiredBasePose.segment<3>(3)),
+    getRotationMatrixFromZyxEulerAngles<scalar_t>(measuredBasePose.segment<3>(3))
+  );
+  vector3_t baseAngularVelocityError = desiredBaseVelocity.head<3>(3) - measuredBaseVelocity.head<3>(3);
+
+  Vector6 b;
+  b.head<3>() = desiredBaseAcceleration.head<3>() 
+          + pGains.head<3>().cwiseProduct(basePositionError) 
+          + dGains.head<3>().cwiseProduct(baselLinearVelocityError);
+  b.tail<3>() = desiredBaseAcceleration.tail<3>() 
+          + pGains.tail<3>().cwiseProduct(baseOrientationError) 
+          + dGains.tail<3>().cwiseProduct(baseAngularVelocityError);
   return {a, b, matrix_t(), vector_t()};
 }
 
