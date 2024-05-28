@@ -99,21 +99,15 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
 
   safetyChecker_ = std::make_shared<SafetyChecker>(bipedalInterface_->getCentroidalModelInfo());
 
-  // low level controller (pid)
-  // mainly use its dynamic reconfigure interface
-  // i am too lazy to implement my own dynamic reconfigure interface(
-  // left leg joints have the same pid gains as the right leg joints
-  // thus we only need legJointNames.size()/2
-  pidControllers_.resize(size_t(legJointNames.size()/2));
-  for (size_t i=0; i<size_t(legJointNames.size()/2); i++){
-    auto success = pidControllers_[i].init(ros::NodeHandle(controller_nh, legJointNames[i] + "/pid"));
-    if (!success){
-      ROS_ERROR_STREAM("[BipedalController] Failed to initialize pid controller for joint " << legJointNames[i]);
-      return false;
-    }
-  }
-
+  // lowlevel controller
+  jointKp_.resize(legJointNames.size(), 0.0);
+  jointKd_.resize(legJointNames.size(), 0.0);
   debugControlCmdPublisher_ = nh.advertise<sensor_msgs::JointState>(robotName_+"_joint_cmd_debug", 1);
+
+  // dynamic reconfigure
+  dynamicReconfigServer_.reset(new DynamicReconfigServer(ros::NodeHandle(controller_nh, "params")));
+  dynamicReconfigCallback_ = boost::bind(&BipedalController::dynamicReconfigCallback, this, _1, _2);
+  dynamicReconfigServer_->setCallback(dynamicReconfigCallback_);
 
   return true;
 }
@@ -172,6 +166,9 @@ void BipedalController::starting(const ros::Time& time){
   std::cerr << "===============================================================" << std::endl;
 
   mpcRunning_ = true;
+
+  // wbc
+  wbc_->clearLastQpSol();
 }
 
 // ###############################################################################################################
@@ -233,10 +230,8 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // velDes = velDes + wbcJointAcc * dt;
 
   for (size_t j = 0; j < jointNum; ++j) {
-    // size_t pid_idx = j >= jointNum/2 ? j - jointNum/2 : j;
-    size_t pid_idx = j < jointNum/2 ? j : j - jointNum/2;
-    scalar_t kp = pidControllers_[pid_idx].getGains().p_gain_;
-    scalar_t kd = pidControllers_[pid_idx].getGains().d_gain_;
+    scalar_t kp = jointKp_[j];
+    scalar_t kd = jointKd_[j];
     hybridJointHandles_[j].setCommand(posDes(j), velDes(j), kp, kd, torque(j));
   }
 
@@ -384,6 +379,44 @@ void BipedalController::updateStateEstimation(const ros::Time& time, const ros::
   currentObservation_.state = rbdConversions_->computeCentroidalStateFromRbdModel(measuredRbdState_);
   currentObservation_.state(9) = yawLast + angles::shortest_angular_distance(yawLast, currentObservation_.state(9));
   currentObservation_.mode = stateEstimate_->getMode();
+}
+
+void BipedalController::dynamicReconfigCallback(bipedal_controllers::BipedalControllerParamsConfig& config, uint32_t level){
+  // update wbc parameters
+  // PD gains for base accel task
+  Eigen::Matrix<scalar_t, 6, 1> baseKp, baseKd;
+  baseKp << config.base_position_x_kp, config.base_position_y_kp, config.base_position_z_kp,
+            config.base_orientation_x_kp, config.base_orientation_y_kp, config.base_orientation_z_kp;
+  baseKd << config.base_position_x_kd, config.base_position_y_kd, config.base_position_z_kd,
+            config.base_orientation_x_kd, config.base_orientation_y_kd, config.base_orientation_z_kd;
+  wbc_->setBasePDGains(baseKp, baseKd);
+  // PD gains for swing leg task
+  wbc_->setSwingLegPDGains(config.swing_kp, config.swing_kd);
+  // task weights
+  wbc_->setWeights(config.swing_leg_weight, config.base_accel_weight, config.contact_force_weight);
+
+  // update joint controller pd gains
+  jointKp_[0] = config.leg_motor_1_kp;
+  jointKp_[1] = config.leg_motor_2_kp;
+  jointKp_[2] = config.leg_motor_3_kp;
+  jointKp_[3] = config.leg_motor_4_kp;
+  jointKp_[4] = config.leg_motor_5_kp;
+  jointKp_[5] = config.leg_motor_1_kp;
+  jointKp_[6] = config.leg_motor_2_kp;
+  jointKp_[7] = config.leg_motor_3_kp;
+  jointKp_[8] = config.leg_motor_4_kp;
+  jointKp_[9] = config.leg_motor_5_kp;
+
+  jointKd_[0] = config.leg_motor_1_kd;
+  jointKd_[1] = config.leg_motor_2_kd;
+  jointKd_[2] = config.leg_motor_3_kd;
+  jointKd_[3] = config.leg_motor_4_kd;
+  jointKd_[4] = config.leg_motor_5_kd;
+  jointKd_[5] = config.leg_motor_1_kd;
+  jointKd_[6] = config.leg_motor_2_kd;
+  jointKd_[7] = config.leg_motor_3_kd;
+  jointKd_[8] = config.leg_motor_4_kd;
+  jointKd_[9] = config.leg_motor_5_kd;
 }
 
 } // namespace bipedal_robot

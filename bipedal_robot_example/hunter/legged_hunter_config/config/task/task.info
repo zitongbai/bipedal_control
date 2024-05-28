@@ -295,9 +295,31 @@ swingLegTask
     kd                   37
 }
 
+baseAccelPDTask
+{
+  baseKp
+  {
+    (0,0)  10.0   ; base position x
+    (1,0)  10.0   ; base position y
+    (2,0)  10.0   ; base position z 
+    (3,0)  10.0   ; base orientation 
+    (4,0)  10.0   ; base orientation 
+    (5,0)  10.0   ; base orientation 
+  }
+  baseKd
+  {
+    (0,0)  0.0    ; base position x
+    (1,0)  0.0    ; base position y
+    (2,0)  0.0    ; base position z
+    (3,0)  0.0    ; base orientation
+    (4,0)  0.0    ; base orientation
+    (5,0)  0.0    ; base orientation
+  }
+}
+
 weight
 {
-    swingLeg        50
-    baseAccel       10
+    swingLeg        20
+    baseAccel       50
     contactForce    0.01
 }

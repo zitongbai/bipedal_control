@@ -119,6 +119,18 @@ void WbcBase::updateMeasured(const vector_t& rbdStateMeasured) {
     pinocchio::getFrameJacobianTimeVariation(model, data, info_.endEffectorFrameIndices[i], pinocchio::LOCAL_WORLD_ALIGNED, jac);
     dj_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum) = jac.template topRows<3>();
   }
+
+  /**
+   * @brief Computes the base Jacobian and its time derivative
+   *  in pinocchio::LOCAL_WORLD_ALIGNED
+   *  For base accel task (base motion tracking task)
+   */
+  baseJ_.setZero(6, info_.generalizedCoordinatesNum);
+  baseDj_.setZero(6, info_.generalizedCoordinatesNum);
+  // get base link name
+  std::string baseLinkName = model.frames[2].name; // 0: universe, 1: root_joint
+  pinocchio::getFrameJacobian(model, data, model.getFrameId(baseLinkName), pinocchio::LOCAL_WORLD_ALIGNED, baseJ_);
+  pinocchio::getFrameJacobianTimeVariation(model, data, model.getFrameId(baseLinkName), pinocchio::LOCAL_WORLD_ALIGNED, baseDj_);
 }
 
 void WbcBase::updateDesired(const vector_t& stateDesired, const vector_t& inputDesired) {
@@ -209,12 +221,13 @@ Task WbcBase::formulateBaseAccelTask(const vector_t& stateDesired, const vector_
 
 Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired, 
                                 const vector_t& inputDesired, 
-                                scalar_t period, 
-                                const Vector6& pGains, 
-                                const Vector6& dGains){
+                                scalar_t period){
   matrix_t a(6, numDecisionVars_);
   a.setZero();
   a.block(0, 0, 6, 6) = matrix_t::Identity(6, 6);
+
+  // set base Jacobian in a
+  a.block(3, 0, 3, info_.generalizedCoordinatesNum) = baseJ_.block(3, 0, 3, info_.generalizedCoordinatesNum);
 
   // joint acceleration
   vector_t jointAccel = centroidal_model::getJointVelocities(inputDesired - inputLast_, info_) / period;
@@ -250,11 +263,13 @@ Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired,
 
   Vector6 b;
   b.head<3>() = desiredBaseAcceleration.head<3>() 
-          + pGains.head<3>().cwiseProduct(basePositionError) 
-          + dGains.head<3>().cwiseProduct(baselLinearVelocityError);
+          + baseKp_.head<3>().cwiseProduct(basePositionError) 
+          + baseKd_.head<3>().cwiseProduct(baselLinearVelocityError);
   b.tail<3>() = desiredBaseAcceleration.tail<3>() 
-          + pGains.tail<3>().cwiseProduct(baseOrientationError) 
-          + dGains.tail<3>().cwiseProduct(baseAngularVelocityError);
+          + baseKp_.tail<3>().cwiseProduct(baseOrientationError) 
+          + baseKd_.tail<3>().cwiseProduct(baseAngularVelocityError)
+          - baseDj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+
   return {a, b, matrix_t(), vector_t()};
 }
 
@@ -400,6 +415,9 @@ void WbcBase::loadTasksSetting(const std::string& taskFile, bool verbose) {
   }
   loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
   loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
+
+  loadData::loadEigenMatrix(taskFile, "baseAccelPDTask.baseKp", baseKp_);
+  loadData::loadEigenMatrix(taskFile, "baseAccelPDTask.baseKd", baseKd_);
 }
 
 

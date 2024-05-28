@@ -81,7 +81,8 @@
   <depend>realtime_tools</depend>
   <depend>urdf</depend>
   <depend>sensor_msgs</depend>
-
+  <depend>dynamic_reconfigure</depend>
+  
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

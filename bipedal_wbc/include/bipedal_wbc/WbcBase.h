@@ -25,6 +25,7 @@ namespace bipedal_robot{
 class WbcBase{
   using Vector6 = Eigen::Matrix<scalar_t, 6, 1>;
   using Matrix6 = Eigen::Matrix<scalar_t, 6, 6>;
+  using Matrix6x = Eigen::Matrix<scalar_t, 6, Eigen::Dynamic>;
 
 public:
   WbcBase(const PinocchioInterface& pinocchioInterface, CentroidalModelInfo info, const PinocchioEndEffectorKinematics& eeKinematics);
@@ -45,6 +46,28 @@ public:
   virtual vector_t update(const vector_t& stateDesired, const vector_t& inputDesired, const vector_t& rbdStateMeasured, size_t mode,
                           scalar_t period);
 
+  /**
+   * @brief Set the Swing Leg P D Gains object
+   *  used in dynamic reconfigure
+   * @param kp P gain for swing leg tracking task
+   * @param kd D gain for swing leg tracking task
+   */
+  void setSwingLegPDGains(scalar_t kp, scalar_t kd) {
+    swingKp_ = kp;
+    swingKd_ = kd;
+  }
+
+  /**
+   * @brief Set the Base P D Gains object
+   *  used in dynamic reconfigure
+   * @param baseKp P gain for base acceleration task
+   * @param baseKd D gain for base acceleration task
+   */
+  void setBasePDGains(const Vector6& baseKp, const Vector6& baseKd) {
+    baseKp_ = baseKp;
+    baseKd_ = baseKd;
+  }
+
  protected:
   void updateMeasured(const vector_t& rbdStateMeasured);
   void updateDesired(const vector_t& stateDesired, const vector_t& inputDesired);
@@ -64,9 +87,7 @@ public:
   Task formulateStanceBaseAccelTask();
   Task formulateBaseAccelPDTask(const vector_t& stateDesired, 
                                 const vector_t& inputDesired, 
-                                scalar_t period, 
-                                const Vector6& pGains, 
-                                const Vector6& dGains);
+                                scalar_t period);
   Task formulateSwingLegTask();
   Task formulateContactForceTask(const vector_t& inputDesired) const;
 
@@ -91,16 +112,14 @@ public:
   vector_t qMeasured_;
 
   // generalized velocities
-  // u = [u_b^T, u_j^T]^T
-  // u_b is the floating base linear and angular velocity
-  // u_j is the joint velocity
-  // note that u_b is not equal to the time derivative of q_b
+  // v = [global_base_velocity_linear, global_base_velocity_angular, joint_velocities]^T
   vector_t vMeasured_;
 
   vector_t inputLast_;
   
   matrix_t j_;    // contact Jacobian
   matrix_t dj_;   // time derivative of contact Jacobian
+  Matrix6x baseJ_, baseDj_; // base Jacobian and its time derivative
 
   contact_flag_t contactFlag_{};
   size_t numContacts_{};
@@ -108,6 +127,9 @@ public:
   // Task Parameters:
   vector_t torqueLimits_;
   scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{};
+  Vector6 baseKp_, baseKd_;
+  
+
 
 };
 

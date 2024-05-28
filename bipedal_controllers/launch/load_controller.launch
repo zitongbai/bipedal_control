@@ -3,6 +3,7 @@
 <launch> 
     <arg name="rviz"               default="false" />
     <arg name="description_name"   default="bipedal_robot_description"/>
+    <arg name="dynamic_reconfigure" default="true"/>
 
     <!-- The task file for the mpc. -->
     <arg name="taskFile"          default="$(find legged_hunter_config)/config/task/task.info"/>
@@ -43,4 +44,8 @@
     <node pkg="ocs2_bipedal_robot_ros" type="bipedal_robot_gait_command" name="bipedal_robot_gait_command"
           output="screen"/>
 
+    <!-- dynamic_reconfigure -->
+    <group if="$(arg dynamic_reconfigure)">
+        <node name="dyn_re_gui" pkg="rqt_reconfigure" type="rqt_reconfigure"/>
+    </group>
 </launch>

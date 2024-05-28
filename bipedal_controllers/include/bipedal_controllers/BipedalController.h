@@ -27,7 +27,11 @@
 #include <ocs2_core/misc/Benchmark.h>
 #include <ocs2_mpc/MPC_MRT_Interface.h>
 
+#include <bipedal_controllers/BipedalControllerParamsConfig.h>
+
 #include <control_toolbox/pid.h>
+#include <dynamic_reconfigure/server.h>
+#include <mutex>
 
 namespace ocs2{
 namespace bipedal_robot{
@@ -91,8 +95,17 @@ protected:
   ros::Publisher observationPublisher_;
 
   // low-level controller
-  std::vector<control_toolbox::Pid> pidControllers_;
+  // std::vector<control_toolbox::Pid> pidControllers_;
+  std::vector<scalar_t> jointKp_, jointKd_;
+  
   ros::Publisher debugControlCmdPublisher_;
+
+  // dynamic reconfigure
+  typedef dynamic_reconfigure::Server<bipedal_controllers::BipedalControllerParamsConfig> DynamicReconfigServer;
+  std::shared_ptr<DynamicReconfigServer> dynamicReconfigServer_;
+  DynamicReconfigServer::CallbackType dynamicReconfigCallback_;
+
+  void dynamicReconfigCallback(bipedal_controllers::BipedalControllerParamsConfig& config, uint32_t level);
 
 private:
   std::thread mpcThread_;

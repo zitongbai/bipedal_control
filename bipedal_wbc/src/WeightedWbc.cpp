@@ -71,6 +71,7 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
     // std::cerr << "dot_v: " << qpSol.segment(0, 16).transpose() << std::endl;
     // std::cerr << "F: " << qpSol.segment(16, 12).transpose() << std::endl;
     // std::cerr << "tau: " << qpSol.segment(28, 10).transpose() << std::endl;
+    std::cerr << "[WeightedWbc] QP solved ~~~ ~~~ ~~~ ~~~" << std::endl;
     // save to lastQpSol_
     lastQpSol_ = qpSol;
   } else {
@@ -86,17 +87,13 @@ Task WeightedWbc::formulateConstraints() {
   return formulateFloatingBaseEomTask() 
         + formulateTorqueLimitsTask() 
         + formulateFrictionConeTask() 
-        // + formulateContactNoMotionTask()
+        + formulateContactNoMotionTask()
         ;
 }
 
 Task WeightedWbc::formulateWeightedTasks(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period) {
-  // if (plannedMode_ == ModeNumber::STANCE) {
-  //   return formulateStanceBaseAccelTask();
-  // } else {
-    return formulateSwingLegTask() * weightSwingLeg_ + formulateBaseAccelTask(stateDesired, inputDesired, period) * weightBaseAccel_ +
+    return formulateSwingLegTask() * weightSwingLeg_ + formulateBaseAccelPDTask(stateDesired, inputDesired, period) * weightBaseAccel_ +
           formulateContactForceTask(inputDesired) * weightContactForce_;
-  // }
 }
 
 void WeightedWbc::loadTasksSetting(const std::string& taskFile, bool verbose) {

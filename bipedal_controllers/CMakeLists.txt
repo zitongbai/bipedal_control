@@ -25,6 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
   realtime_tools
   urdf
   sensor_msgs
+  dynamic_reconfigure 
 )
 
 find_package(PkgConfig REQUIRED)
@@ -105,10 +106,9 @@ pkg_check_modules(pinocchio REQUIRED pinocchio)
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/BipedalControllerParams.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
