@@ -9,12 +9,12 @@ bipedal_robot_interface
 
 model_settings
 {
-  positionErrorGain             0.0 ; 20.0
-  phaseTransitionStanceTime     0.4
+  positionErrorGain             20.0 ; 20.0
+  phaseTransitionStanceTime     0.1
 
   verboseCppAd                  true
   recompileLibrariesCppAd       true
-  modelFolderCppAd              /tmp/ocs2
+  modelFolderCppAd              /tmp/bipedal_control/ocs2
   jointNames
   {
     [0] leg_l1_joint
@@ -162,7 +162,7 @@ mpc
 
   debugPrint                      false
 
-  mpcDesiredFrequency             50  ; [Hz]
+  mpcDesiredFrequency             100  ; [Hz]
   mrtDesiredFrequency             400 ; [Hz]
 }
 
@@ -203,28 +203,28 @@ Q
   scaling 1e+0
 
   ;; Normalized Centroidal Momentum: [linear, angular] ;;
-  (0,0)   15.0     ; vcom_x
-  (1,1)   15.0     ; vcom_y
-  (2,2)   30.0     ; vcom_z
-  (3,3)   10.0     ; L_x / robotMass
-  (4,4)   10.0     ; L_y / robotMass
-  (5,5)   10.0     ; L_z / robotMass
+  (0,0)   13.0     ; vcom_x
+  (1,1)   13.0     ; vcom_y
+  (2,2)   13.0     ; vcom_z
+  (3,3)   13.0     ; L_x / robotMass
+  (4,4)   13.0     ; L_y / robotMass
+  (5,5)   13.0     ; L_z / robotMass
 
   ;; Base Pose: [position, orientation] ;;
   (6,6)   500.0    ; p_base_x
   (7,7)   500.0    ; p_base_y
   (8,8)   500.0    ; p_base_z
   (9,9)   100.0    ; theta_base_z
-  (10,10) 200.0    ; theta_base_y
-  (11,11) 200.0    ; theta_base_x
+  (10,10) 500.0    ; theta_base_y
+  (11,11) 500.0    ; theta_base_x
 
   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
-  (12,12)  100.0     ; leg_l1_joint
+  (12,12)  10.0     ; leg_l1_joint
   (13,13)  10.0     ; leg_l2_joint
   (14,14)  10.0     ; leg_l3_joint
   (15,15)  10.0     ; leg_l4_joint
   (16,16)  10.0     ; leg_l5_joint
-  (17,17)  100.0     ; leg_r1_joint
+  (17,17)  10.0     ; leg_r1_joint
   (18,18)  10.0     ; leg_r2_joint
   (19,19)  10.0     ; leg_r3_joint
   (20,20)  10.0     ; leg_r4_joint
@@ -267,7 +267,7 @@ R
 
 frictionConeSoftConstraint
 {
-  frictionCoefficient    0.5
+  frictionCoefficient    0.7
   
   ; relaxed log barrier parameters
   mu                     0.1
@@ -286,40 +286,40 @@ torqueLimitsTask
 
 frictionConeTask
 {
-  frictionCoefficient    0.3
+  frictionCoefficient    0.7
 }
 
 swingLegTask
 {
-    kp                   350
-    kd                   37
+    kp                   160
+    kd                   18
 }
 
 baseAccelPDTask
 {
   baseKp
   {
-    (0,0)  10.0   ; base position x
-    (1,0)  10.0   ; base position y
-    (2,0)  10.0   ; base position z 
-    (3,0)  10.0   ; base orientation 
-    (4,0)  10.0   ; base orientation 
-    (5,0)  10.0   ; base orientation 
+    (0,0)  40.0   ; base position x
+    (1,0)  40.0   ; base position y
+    (2,0)  20.0   ; base position z 
+    (3,0)  20.0   ; base orientation 
+    (4,0)  20.0   ; base orientation 
+    (5,0)  20.0   ; base orientation 
   }
   baseKd
   {
-    (0,0)  0.0    ; base position x
-    (1,0)  0.0    ; base position y
-    (2,0)  0.0    ; base position z
-    (3,0)  0.0    ; base orientation
-    (4,0)  0.0    ; base orientation
-    (5,0)  0.0    ; base orientation
+    (0,0)  4.0    ; base position x
+    (1,0)  4.0    ; base position y
+    (2,0)  3.0    ; base position z
+    (3,0)  3.0    ; base orientation
+    (4,0)  3.0    ; base orientation
+    (5,0)  3.0    ; base orientation
   }
 }
 
 weight
 {
-    swingLeg        20
-    baseAccel       50
+    swingLeg        100
+    baseAccel       1
     contactForce    0.01
 }
