@@ -230,7 +230,8 @@ Task WbcBase::formulateBaseAccelPDTask(const vector_t& stateDesired,
   a.block(3, 0, 3, info_.generalizedCoordinatesNum) = baseJ_.block(3, 0, 3, info_.generalizedCoordinatesNum);
 
   // joint acceleration
-  vector_t jointAccel = centroidal_model::getJointVelocities(inputDesired - inputLast_, info_) / period;
+  // vector_t jointAccel = centroidal_model::getJointVelocities(inputDesired - inputLast_, info_) / period;
+  vector_t jointAccel = vector_t::Zero(info_.actuatedDofNum);
   inputLast_ = inputDesired;
 
   // desired base pose, velocity, and acceleration in world frame
