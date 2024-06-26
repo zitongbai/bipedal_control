@@ -110,6 +110,11 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
   dynamicReconfigCallback_ = boost::bind(&BipedalController::dynamicReconfigCallback, this, _1, _2);
   dynamicReconfigServer_->setCallback(dynamicReconfigCallback_);
 
+  // debug 
+  debugPublisher_ = std::make_shared<DebugPublisher>(bipedalInterface_->getPinocchioInterface(), 
+                                                      bipedalInterface_->getCentroidalModelInfo(), 
+                                                      *eeKinematicsPtr_, nh);
+
   return true;
 }
 
@@ -209,13 +214,13 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // std::cerr << "period: " << period.toSec() << std::endl;
   // std::cerr << "===============================================================" << std::endl;
 
-  // if(plannedMode == ModeNumber::STANCE){
+  if(plannedMode == ModeNumber::STANCE){
     optimizedState.setZero();
     optimizedInput.setZero();
     optimizedState.segment(6, 6) = currentObservation_.state.segment<6>(6);
     optimizedState.segment(6 + 6, bipedalInterface_->getCentroidalModelInfo().actuatedDofNum) = defaultJointState_;
     plannedMode = ModeNumber::STANCE;
-  // }
+  }
 
   // Whole body control
   wbcTimer_.startTimer();
@@ -259,6 +264,8 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   }
   jointStateCmdMsg.header.stamp = time;
   debugControlCmdPublisher_.publish(jointStateCmdMsg);
+
+  debugPublisher_->update(optimizedState, optimizedInput, measuredRbdState_);
 
   // TODO: self collision visualization
 

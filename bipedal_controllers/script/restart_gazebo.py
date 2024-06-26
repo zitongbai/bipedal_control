@@ -4,6 +4,8 @@ import rospy
 from controller_manager_msgs.srv import SwitchController, SwitchControllerRequest
 from std_srvs.srv import Empty
 import time
+from geometry_msgs.msg import Twist
+from ocs2_msgs.msg import mode_schedule
 
 
 def restart_gazebo():
@@ -14,6 +16,10 @@ def restart_gazebo():
     
     reset_simulation_service = rospy.ServiceProxy('/gazebo/reset_world', Empty)
     switch_controller_service = rospy.ServiceProxy('/controller_manager/switch_controller', SwitchController)
+    
+    robot_name = "bipedal_robot"
+    gait_pub = rospy.Publisher(robot_name+"_mpc_mode_schedule", mode_schedule, queue_size=1)
+    cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     
     try:
         
@@ -63,6 +69,36 @@ def restart_gazebo():
         else:
             rospy.logwarn('Controller switch 2 failed')
         
+        # time.sleep(1.0)
+        # # publish gait
+        # # refer to gait.info
+        # gait_msg = mode_schedule()
+        # # stance
+        # #  {
+        # #    modeSequence
+        # #    {
+        # #      [0]     STANCE
+        # #    }
+        # #    switchingTimes
+        # #    {
+        # #      [0]     0.0
+        # #      [1]     0.5
+        # #    }
+        # # }
+        # gait_msg.eventTimes = [0.0, 0.5]
+        # gait_msg.modeSequence = [3] # stance, refer to ocs2_bipedal_robot/gait/MotionPhaseDefinition.h
+        # gait_pub.publish(gait_msg)
+        # rospy.loginfo("Publish stance gait")
+        
+        time.sleep(0.1)
+        # send the trajectory cmd_vel once
+        cmd_vel_msg = Twist()
+        cmd_vel_msg.linear.x = 0.0
+        cmd_vel_msg.linear.y = 0.0
+        cmd_vel_msg.linear.z = 0.0
+        cmd_vel_msg.angular.z = 0.0
+        cmd_vel_pub.publish(cmd_vel_msg)
+        rospy.loginfo("Publish cmd_vel")
     
     except rospy.ServiceException as e:
         rospy.logerr('Service call failed: {}'.format(e))

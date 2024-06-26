@@ -28,6 +28,7 @@
 #include <ocs2_mpc/MPC_MRT_Interface.h>
 
 #include <bipedal_controllers/BipedalControllerParamsConfig.h>
+#include <bipedal_controllers/debug/DebugPublisher.h>
 
 #include <control_toolbox/pid.h>
 #include <dynamic_reconfigure/server.h>
@@ -104,8 +105,10 @@ protected:
   typedef dynamic_reconfigure::Server<bipedal_controllers::BipedalControllerParamsConfig> DynamicReconfigServer;
   std::shared_ptr<DynamicReconfigServer> dynamicReconfigServer_;
   DynamicReconfigServer::CallbackType dynamicReconfigCallback_;
-
   void dynamicReconfigCallback(bipedal_controllers::BipedalControllerParamsConfig& config, uint32_t level);
+
+  // debug 
+  std::shared_ptr<DebugPublisher> debugPublisher_;
 
 private:
   std::thread mpcThread_;

@@ -65,11 +65,10 @@ pkg_check_modules(pinocchio REQUIRED pinocchio)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  TrackingError.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -85,11 +84,11 @@ pkg_check_modules(pinocchio REQUIRED pinocchio)
 #   Action2.action
 # )
 
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -146,6 +145,7 @@ link_directories(
 add_library(${PROJECT_NAME}
   src/BipedalController.cpp
   src/InitialJointController.cpp
+  src/debug/DebugPublisher.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
