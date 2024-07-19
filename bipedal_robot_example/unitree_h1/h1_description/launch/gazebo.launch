@@ -1,12 +1,28 @@
 <launch>
-  <include
-    file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="paused" value="true" />
-  </include>
+
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
+    <param name="bipedal_robot_description" textfile="$(find h1_description)/urdf/h1_with_sole.urdf"/>
+    <param name="bipedal_robot_description_sim" textfile="$(find h1_description)/urdf/h1_gazebo.urdf"/>
+
+    <rosparam file="$(find h1_description)/config/hw_sim.yaml" command="load"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find bipedal_gazebo)/worlds/empty_world.world"/>
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
   <node
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-file $(find h1_description)/urdf/h1.urdf -urdf -z 1.05 -model h1_description"
+    args="-param bipedal_robot_description_sim -urdf -z 1.05 -model h1_description"
     output="screen" />
 </launch>

@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+
+<launch> 
+    <arg name="rviz"               default="false" />
+    <arg name="description_name"   default="bipedal_robot_description"/>
+    <arg name="dynamic_reconfigure" default="true"/>
+
+    <!-- The task file for the mpc. -->
+    <arg name="taskFile"          default="$(find h1_ocs2_config)/config/task/task.info"/>
+    <!-- The reference related config file of the robot -->
+    <arg name="referenceFile"     default="$(find h1_ocs2_config)/config/command/reference.info"/>
+    <!-- The URDF model of the robot -->
+    <arg name="urdfFile"          default="$(find h1_description)/urdf/h1_with_sole.urdf"/>
+    <!-- The file defining gait definition -->
+    <arg name="gaitCommandFile"   default="$(find h1_ocs2_config)/config/command/gait.info"/>
+
+    <!-- make the files into global parameters -->
+    <param name="taskFile"          value="$(arg taskFile)" />
+    <param name="referenceFile"     value="$(arg referenceFile)" />
+    <param name="urdfFile"          value="$(arg urdfFile)" />
+    <param name="gaitCommandFile"   value="$(arg gaitCommandFile)"/>
+
+    <!-- rviz -->
+    <group if="$(arg rviz)">
+        <!-- <param name="$(arg description_name)" textfile="$(arg urdfFile)"/> -->
+        <arg name="rvizconfig" default="$(find ocs2_bipedal_robot_ros)/rviz/bipedal_robot.rviz" />
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rvizconfig)" output="screen" />
+      </group>
+
+    <!-- load ros controller parameters -->
+    <rosparam file="$(find h1_ocs2_config)/config/controllers.yaml" command="load"/>
+
+    <!-- controller manager-->
+    <node name="controller_loader" pkg="controller_manager" type="controller_manager"
+        output="screen" args="load
+        controllers/joint_state_controller
+        controllers/init_joint_pos_controller
+        controllers/bipedal_controller
+        controllers/upper_joint_controller"/>
+
+    <!-- target trajectories publisher -->
+    <node name="bipedal_robot_target" pkg="bipedal_controllers" type="bipedal_target_trajectories_publisher" output="screen"/>
+
+    <!-- gait command publisher -->
+    <node pkg="ocs2_bipedal_robot_ros" type="bipedal_robot_gait_command" name="bipedal_robot_gait_command"
+          output="screen"/>
+
+    <!-- dynamic_reconfigure -->
+    <group if="$(arg dynamic_reconfigure)">
+        <node name="dyn_re_gui" pkg="rqt_reconfigure" type="rqt_reconfigure"/>
+    </group>
+</launch>

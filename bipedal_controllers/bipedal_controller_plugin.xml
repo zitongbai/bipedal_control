@@ -21,4 +21,12 @@
         </description>
     </class>
 
+    <class name="bipedal_robot/UpperJointController" type="ocs2::bipedal_robot::UpperJointController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The controller for upperbody joint control
+        </description>
+    </class>
+
+
 </library>

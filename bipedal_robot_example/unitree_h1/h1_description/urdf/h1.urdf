@@ -215,8 +215,8 @@ Stephen Brawner (brawner@gmail.com)
     <axis
       xyz="0 1 0" />
     <limit
-      lower="-3.14"
-      upper="2.53"
+      lower="-1.57"
+      upper="1.57"
       effort="200"
       velocity="23" />
   </joint>
@@ -490,8 +490,8 @@ Stephen Brawner (brawner@gmail.com)
     <axis
       xyz="0 1 0" />
     <limit
-      lower="-3.14"
-      upper="2.53"
+      lower="-1.57"
+      upper="1.57"
       effort="200"
       velocity="23" />
   </joint>

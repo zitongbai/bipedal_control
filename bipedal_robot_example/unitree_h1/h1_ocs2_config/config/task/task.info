@@ -1,8 +1,8 @@
-centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
   
 bipedal_robot_interface
 {
-  verbose                               false  // show the loaded parameters
+  verbose                               true  // show the loaded parameters
   useAnalyticalGradientsDynamics        false
   useAnalyticalGradientsConstraints     false
 }
@@ -13,8 +13,8 @@ model_settings
   phaseTransitionStanceTime     0.4
 
   verboseCppAd                  true
-  recompileLibrariesCppAd       true
-  modelFolderCppAd              /tmp/ocs2
+  recompileLibrariesCppAd       false   // remember to set to true if you change the model
+  modelFolderCppAd              ~/.cache/bipedal_control/ocs2
   jointNames
   {
     [0] left_hip_yaw_joint
@@ -38,6 +38,19 @@ model_settings
     [1] left_sole_2_link
     [2] right_sole_1_link
     [3] right_sole_2_link
+  }
+  upperJointNames
+  {
+    [0] torso_joint
+    [1] left_shoulder_pitch_joint
+    [2] left_shoulder_roll_joint
+    [3] left_shoulder_yaw_joint
+    [4] left_elbow_joint
+    [5] right_shoulder_pitch_joint
+    [6] right_shoulder_roll_joint
+    [7] right_shoulder_yaw_joint
+    [8] right_elbow_joint
+
   }
 }
 
@@ -293,6 +306,28 @@ swingLegTask
 {
     kp                   350
     kd                   37
+}
+
+baseAccelPDTask
+{
+  baseKp
+  {
+    (0,0)  40.0   ; base position x
+    (1,0)  40.0   ; base position y
+    (2,0)  20.0   ; base position z 
+    (3,0)  20.0   ; base orientation 
+    (4,0)  20.0   ; base orientation 
+    (5,0)  20.0   ; base orientation 
+  }
+  baseKd
+  {
+    (0,0)  4.0    ; base position x
+    (1,0)  4.0    ; base position y
+    (2,0)  3.0    ; base position z
+    (3,0)  3.0    ; base orientation
+    (4,0)  3.0    ; base orientation
+    (5,0)  3.0    ; base orientation
+  }
 }
 
 weight

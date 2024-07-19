@@ -145,6 +145,7 @@ link_directories(
 add_library(${PROJECT_NAME}
   src/BipedalController.cpp
   src/InitialJointController.cpp
+  src/UpperJointController.cpp
   src/debug/DebugPublisher.cpp
 )
 

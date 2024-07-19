@@ -1,0 +1,22 @@
+controllers:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 100
+  bipedal_controller:
+    type: bipedal_robot/BipedalController
+  init_joint_pos_controller:
+    type: bipedal_robot/InitialJointController
+    left_hip_yaw_joint:
+      pid: {p: 30.0, i: 0.0, d: 2.0}
+    left_hip_roll_joint:
+      pid: {p: 30.0, i: 0.0, d: 2.0}
+    left_hip_pitch_joint:
+      pid: {p: 40.0, i: 0.0, d: 2.0}
+    left_knee_joint:
+      pid: {p: 40.0, i: 0.0, d: 2.0}
+    left_ankle_joint:
+      pid: {p: 30.0, i: 0.0, d: 0.01}
+  upper_joint_controller:
+    type: bipedal_robot/UpperJointController
+    
+
