@@ -80,10 +80,11 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
     hybridJointHandles_.push_back(hybridJointInterface->getHandle(jointName));
   }
   // get contact sensor handles
-  auto * contactSensorInterface = robot_hw->get<ContactSensorInterface>();
-  for (const auto& contactName : bipedalInterface_->modelSettings().contactNames3DoF){
-    contactHandles_.push_back(contactSensorInterface->getHandle(contactName));
-  }
+  // TODO: deal with contact sensor
+  // auto * contactSensorInterface = robot_hw->get<ContactSensorInterface>();
+  // for (const auto& contactName : bipedalInterface_->modelSettings().contactNames3DoF){
+  //   contactHandles_.push_back(contactSensorInterface->getHandle(contactName));
+  // }
   // get imu sensor handle
   auto * imuSensorInterface = robot_hw->get<hardware_interface::ImuSensorInterface>();
   imuSensorHandle_ = imuSensorInterface->getHandle("base_imu");
@@ -367,9 +368,12 @@ void BipedalController::updateStateEstimation(const ros::Time& time, const ros::
     jointVel(i) = hybridJointHandles_[i].getVelocity();
   }
 
-  for(size_t i = 0; i < contactHandles_.size(); i++){
-    contactFlag[i] = contactHandles_[i].isContact();
-  }
+  // TODO: contact interface
+  // for(size_t i = 0; i < contactHandles_.size(); i++){
+  //   contactFlag[i] = contactHandles_[i].isContact();
+  // }
+  // TODO: update contactFlag
+  contactFlag = modeNumber2StanceLeg(ModeNumber::STANCE);
 
   for (size_t i = 0; i < 4; ++i) {
     quat.coeffs()(i) = imuSensorHandle_.getOrientation()[i];

@@ -1,0 +1,7 @@
+bipedal_mujoco:
+  robot: h1
+  robot_scene: scene.xml
+  description_pkg: h1_description
+  loop_frequency: 500
+  cycle_time_error_threshold: 0.002
+  thread_priority: 95

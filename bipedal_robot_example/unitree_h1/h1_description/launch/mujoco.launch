@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="robot_name" default="h1"/>
+
+    <param name="bipedal_robot_description" textfile="$(find h1_description)/urdf/h1_with_sole.urdf"/>
+
+    <rosparam file="$(find h1_description)/config/mj.yaml" command="load"/>
+
+    <node name="bipedal_mujoco" pkg="bipedal_mujoco" type="bipedal_mujoco" respawn="false" clear_params="true" output="screen" />
+
+</launch>

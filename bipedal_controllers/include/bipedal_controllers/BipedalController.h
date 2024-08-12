@@ -37,8 +37,9 @@
 namespace ocs2{
 namespace bipedal_robot{
 
-class BipedalController : public controller_interface::MultiInterfaceController<HybridJointInterface, hardware_interface::ImuSensorInterface,
-                                                                               ContactSensorInterface> {
+class BipedalController : public controller_interface::MultiInterfaceController<HybridJointInterface, hardware_interface::ImuSensorInterface
+                                                                              //  ,ContactSensorInterface
+                                                                               > {
 public:
   BipedalController() = default;
   ~BipedalController() override;
@@ -73,7 +74,7 @@ protected:
   
   // ros control interface
   std::vector<HybridJointHandle> hybridJointHandles_;
-  std::vector<ContactSensorHandle> contactHandles_;
+  // std::vector<ContactSensorHandle> contactHandles_;
   hardware_interface::ImuSensorHandle imuSensorHandle_;
 
   // State Estimation
