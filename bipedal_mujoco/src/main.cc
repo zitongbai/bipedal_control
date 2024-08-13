@@ -32,6 +32,7 @@
 
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <std_srvs/Empty.h>
 
 #include "bipedal_mujoco/hw/BipedalMujocoHWLoop.h"
 #include "bipedal_mujoco/hw/BipedalMujocoHW.h"
@@ -540,6 +541,14 @@ int main(int argc, char** argv) {
   bipedal_hw->init(nh, robotHwNh);
   BipedalMujocoHWLoop loop(nh, bipedal_hw, *sim);
 
+  // create a ros service server to reset the simulation
+  ros::ServiceServer reset_server = nh.advertiseService<std_srvs::Empty::Request, std_srvs::Empty::Response>(
+      "reset_mujoco", [&sim](std_srvs::Empty::Request& req, std_srvs::Empty::Response& res) {
+        ROS_WARN("[Mujoco] Resetting simulation");
+        sim->pending_.reset = true;
+        return true;
+      }
+  );
 
   // start simulation UI loop (blocking call)
   sim->RenderLoop();
