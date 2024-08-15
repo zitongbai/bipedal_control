@@ -42,8 +42,8 @@
     <node name="bipedal_robot_target" pkg="bipedal_controllers" type="bipedal_target_trajectories_publisher" output="screen"/>
 
     <!-- gait command publisher -->
-    <node pkg="ocs2_bipedal_robot_ros" type="bipedal_robot_gait_command" name="bipedal_robot_gait_command"
-          output="screen"/>
+    <node pkg="ocs2_bipedal_robot_ros" type="bipedal_robot_gait_command" name="bipedal_robot_gait_command" 
+          output="screen" launch-prefix="gnome-terminal --"/>
 
     <!-- dynamic_reconfigure -->
     <group if="$(arg dynamic_reconfigure)">

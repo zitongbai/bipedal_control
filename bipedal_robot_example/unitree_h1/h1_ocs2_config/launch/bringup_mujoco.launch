@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<launch> 
+    <arg name="rviz"               default="false" />
+    <arg name="dynamic_reconfigure" default="true"/>
+
+    <!-- launch mujoco -->
+    <include file="$(find h1_description)/launch/mujoco.launch"/>
+
+    <!-- load ros controllers -->
+    <include file="$(find h1_ocs2_config)/launch/load_controllers.launch">
+        <arg name="rviz" value="$(arg rviz)"/>
+        <arg name="dynamic_reconfigure" value="$(arg dynamic_reconfigure)"/>
+    </include>
+
+</launch>

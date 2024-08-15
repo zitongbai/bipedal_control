@@ -27,6 +27,8 @@ struct MjJointData {
 
 // struct to store imu data (for ros control)
 struct MjImuData {
+  std::string handle_name_;
+  std::string frame_id_;
   double ori_[4];            // NOLINT(modernize-avoid-c-arrays)
   double oriCov_[9];         // NOLINT(modernize-avoid-c-arrays)
   double angularVel_[3];     // NOLINT(modernize-avoid-c-arrays)
@@ -62,6 +64,13 @@ private:
     int jointSensorNum_;
     const int jointSensorCoeff_ = 3;
 
+    // publisher for debug
+    ros::Publisher imuPub_;
+    ros::Publisher groundTruthPub_;
+
+    std::string imuTopicName_;
+    std::string groundTruthTopicName_;
+    std::string baseLink_;
 };
 
 

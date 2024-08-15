@@ -38,15 +38,15 @@ protected:
    */
   bool checkOrientation(const SystemObservation& observation) {
     vector_t pose = centroidal_model::getBasePose(observation.state, info_);
-    const scalar_t threshold = M_PI_2;
+    const scalar_t threshold = M_PI/3;
     if (pose(5) > threshold || pose(5) < -threshold) {
-      std::cerr << "[SafetyChecker] Orientation safety check failed!" << std::endl;
+      std::cerr << "[SafetyChecker] Orientation x safety check failed!" << std::endl;
       return false;
     }
-    // if (pose(4) > threshold || pose(4) < -threshold) {
-    //   std::cerr << "[SafetyChecker] Orientation safety check failed!" << std::endl;
-    //   return false;
-    // }
+    if (pose(4) > threshold || pose(4) < -threshold) {
+      std::cerr << "[SafetyChecker] Orientation y safety check failed!" << std::endl;
+      return false;
+    }
     return true;
   }
 
