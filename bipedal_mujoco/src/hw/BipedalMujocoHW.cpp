@@ -124,13 +124,15 @@ void BipedalMujocoHW::read(const ros::Time& time, const ros::Duration& period) {
   } // end of lock
 
   // Set feedforward and velocity cmd to zero to avoid for safety when not controller setCommand
-  std::vector<std::string> names = hybridJointInterface_.getNames();
-  for(const auto & name:names){
-    HybridJointHandle handle = hybridJointInterface_.getHandle(name);
-    handle.setFeedforward(0.0);
-    handle.setVelocityDesired(0.0);
-    handle.setKd(3.0);
+  // notice that we called BipedalMujocoHW::read first and then BipedalMujocoHW::write
+  for(size_t i=0; i<jointNum_; i++){
+    jointData_[i].posDes_ = jointData_[i].pos_;
+    jointData_[i].velDes_ = jointData_[i].vel_;
+    jointData_[i].ff_ = 0.0;
+    jointData_[i].kp_ = 0.0;
+    jointData_[i].kd_ = 0.0;
   }
+
 }
 
 void BipedalMujocoHW::write(const ros::Time& time, const ros::Duration& period) {
