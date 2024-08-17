@@ -330,6 +330,11 @@ baseAccelPDTask
   }
 }
 
+noContactMotionTask
+{
+  tolerance   3
+}
+
 weight
 {
     swingLeg        100

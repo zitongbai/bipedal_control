@@ -237,14 +237,14 @@ void BipedalController::update(const ros::Time& time, const ros::Duration& perio
   // low level control
   auto jointNum = bipedalInterface_->getCentroidalModelInfo().actuatedDofNum;
   vector_t torque = x.tail(jointNum);
-  vector_t wbcJointAcc = x.segment(6, jointNum);
+  // vector_t wbcJointAcc = x.segment(6, jointNum);
 
   vector_t posDes = centroidal_model::getJointAngles(optimizedState, bipedalInterface_->getCentroidalModelInfo());
   vector_t velDes = centroidal_model::getJointVelocities(optimizedInput, bipedalInterface_->getCentroidalModelInfo());
 
-  scalar_t dt = period.toSec();
-  posDes = posDes + 0.5* wbcJointAcc * dt * dt;
-  velDes = velDes + wbcJointAcc * dt;
+  // scalar_t dt = period.toSec();
+  // posDes = posDes + 0.5* wbcJointAcc * dt * dt;
+  // velDes = velDes + wbcJointAcc * dt;
 
   for (size_t j = 0; j < jointNum; ++j) {
     scalar_t kp = jointKp_[j];

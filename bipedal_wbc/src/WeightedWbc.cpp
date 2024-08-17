@@ -87,7 +87,7 @@ Task WeightedWbc::formulateConstraints() {
   return formulateFloatingBaseEomTask() 
         + formulateTorqueLimitsTask() 
         + formulateFrictionConeTask() 
-        // + formulateContactNoMotionTask()
+        + formulateNoContactMotionTask()
         ;
 }
 

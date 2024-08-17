@@ -173,21 +173,38 @@ Task WbcBase::formulateFloatingBaseEomTask() {
   return {a, b, matrix_t(), vector_t()};
 }
 
-Task WbcBase::formulateContactNoMotionTask() {
-  matrix_t a(3 * numContacts_, numDecisionVars_);
-  vector_t b(a.rows());
-  a.setZero();
-  b.setZero();
+Task WbcBase::formulateNoContactMotionTask() {
+  // matrix_t a(3 * numContacts_, numDecisionVars_);
+  // vector_t b(a.rows());
+  // a.setZero();
+  // b.setZero();
+  // size_t j = 0;
+  // for (size_t i = 0; i < info_.numThreeDofContacts; i++) {
+  //   if (contactFlag_[i]) {
+  //     a.block(3 * j, 0, 3, info_.generalizedCoordinatesNum) = j_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum);
+  //     b.segment(3 * j, 3) = -dj_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+  //     j++;
+  //   }
+  // }
+
+  // return {a, b, matrix_t(), vector_t()};
+
+  matrix_t d(6 * numContacts_, numDecisionVars_);
+  vector_t f(d.rows());
+  d.setZero();
+  f.setZero();
+  vector3_t tolerance = noContactMotionTolerance_ * vector3_t::Ones();
   size_t j = 0;
   for (size_t i = 0; i < info_.numThreeDofContacts; i++) {
-    if (contactFlag_[i]) {
-      a.block(3 * j, 0, 3, info_.generalizedCoordinatesNum) = j_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum);
-      b.segment(3 * j, 3) = -dj_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+    if(contactFlag_[i]){
+      d.block(6 * j, 0, 3, info_.generalizedCoordinatesNum) = j_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum);
+      d.block(6 * j + 3, 0, 3, info_.generalizedCoordinatesNum) = - j_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum);
+      f.segment(6 * j, 3) = -dj_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_ + tolerance;
+      f.segment(6 * j + 3, 3) = dj_.block(3 * i, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_ - tolerance;
       j++;
     }
   }
-
-  return {a, b, matrix_t(), vector_t()};
+  return {matrix_t(), vector_t(), d, f};
 }
 
 
@@ -420,6 +437,13 @@ void WbcBase::loadTasksSetting(const std::string& taskFile, bool verbose) {
 
   loadData::loadEigenMatrix(taskFile, "baseAccelPDTask.baseKp", baseKp_);
   loadData::loadEigenMatrix(taskFile, "baseAccelPDTask.baseKd", baseKd_);
+
+  prefix = "noContactMotionTask.";
+  if (verbose) {
+    std::cerr << "\n #### No Contact Motion Task:";
+    std::cerr << "\n #### =============================================================================\n";
+  }
+  loadData::loadPtreeValue(pt, noContactMotionTolerance_, prefix + "tolerance", verbose);
 }
 
 

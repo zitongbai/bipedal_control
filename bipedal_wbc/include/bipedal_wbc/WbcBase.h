@@ -81,7 +81,7 @@ public:
    */
   Task formulateFloatingBaseEomTask();
   Task formulateTorqueLimitsTask();
-  Task formulateContactNoMotionTask();
+  Task formulateNoContactMotionTask();
   Task formulateFrictionConeTask();
   Task formulateBaseAccelTask(const vector_t& stateDesired, const vector_t& inputDesired, scalar_t period);
   Task formulateStanceBaseAccelTask();
@@ -128,7 +128,7 @@ public:
   vector_t torqueLimits_;
   scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{};
   Vector6 baseKp_, baseKd_;
-  
+  scalar_t noContactMotionTolerance_{};
 
 
 };
