@@ -68,6 +68,7 @@ bool BipedalController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHan
   CentroidalModelPinocchioMapping pinocchioMapping(bipedalInterface_->getCentroidalModelInfo());
   eeKinematicsPtr_ = std::make_shared<PinocchioEndEffectorKinematics>(
       bipedalInterface_->getPinocchioInterface(), pinocchioMapping, bipedalInterface_->modelSettings().contactNames3DoF);
+  // TODO: define a new class for visualization
   robotVisualizer_ = std::make_shared<BipedalRobotVisualizer>(
       bipedalInterface_->getPinocchioInterface(), bipedalInterface_->getCentroidalModelInfo(), *eeKinematicsPtr_, nh);
   // TODO: self collision visualization

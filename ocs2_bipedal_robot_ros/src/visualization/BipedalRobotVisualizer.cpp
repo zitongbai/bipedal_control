@@ -75,6 +75,7 @@ BipedalRobotVisualizer::BipedalRobotVisualizer(PinocchioInterface pinocchioInter
     jointNames_.push_back(model.names[i]);
   }
   // get base link name
+  // TODO: make it more elegant
   baseLinkName_ = model.frames[2].name; // 0: universe, 1: root_joint
 
 };
@@ -138,7 +139,8 @@ void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const Syste
   }
 
   // Publish
-  publishJointTransforms(timeStamp, qJoints);
+  // TODO: re-enable it when another visualization has been created for controller
+  // publishJointTransforms(timeStamp, qJoints);
   publishBaseTransform(timeStamp, basePose);
   publishCartesianMarkers(timeStamp, modeNumber2StanceLeg(observation.mode), feetPositions, feetForces);
 }

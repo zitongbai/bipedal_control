@@ -6,7 +6,7 @@
     <arg name="headless" default="false"/>
     <arg name="debug" default="false"/>
 
-    <param name="bipedal_robot_description" textfile="$(find h1_description)/urdf/h1_with_sole.urdf"/>
+    <!-- <param name="bipedal_robot_description" textfile="$(find h1_description)/urdf/h1_with_sole.urdf"/> -->
     <param name="bipedal_robot_description_sim" textfile="$(find h1_description)/urdf/h1_gazebo.urdf"/>
 
     <rosparam file="$(find h1_description)/config/hw_sim.yaml" command="load"/>

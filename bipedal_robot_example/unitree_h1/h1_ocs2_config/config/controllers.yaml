@@ -1,7 +1,27 @@
 controllers:
   joint_state_controller:
     type: joint_state_controller/JointStateController
-    publish_rate: 100
+    publish_rate: 300
+    joints:
+      - left_hip_yaw_joint
+      - left_hip_roll_joint
+      - left_hip_pitch_joint
+      - left_knee_joint
+      - left_ankle_joint
+      - right_hip_yaw_joint
+      - right_hip_roll_joint
+      - right_hip_pitch_joint
+      - right_knee_joint
+      - right_ankle_joint
+      - left_shoulder_yaw_joint
+      - left_shoulder_roll_joint
+      - left_shoulder_pitch_joint
+      - left_elbow_joint
+      - right_shoulder_yaw_joint
+      - right_shoulder_roll_joint
+      - right_shoulder_pitch_joint
+      - right_elbow_joint
+      - torso_joint
   bipedal_controller:
     type: bipedal_robot/BipedalController
   init_joint_pos_controller:
