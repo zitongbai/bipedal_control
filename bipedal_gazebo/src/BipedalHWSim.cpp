@@ -41,7 +41,7 @@
 namespace ocs2 {
 namespace bipedal_robot {
 
-bool LeggedHWSim::initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
+bool BipedalHWSim::initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
                           const urdf::Model* urdf_model, std::vector<transmission_interface::TransmissionInfo> transmissions) {
 
   /**
@@ -85,7 +85,7 @@ bool LeggedHWSim::initSim(const std::string& robot_namespace, ros::NodeHandle mo
   return ret;
 }
 
-void LeggedHWSim::readSim(ros::Time time, ros::Duration period) {
+void BipedalHWSim::readSim(ros::Time time, ros::Duration period) {
   // read joints data
   for (unsigned int j = 0; j < n_dof_; j++) {
     double position = sim_joints_[j]->Position(0);
@@ -157,7 +157,7 @@ void LeggedHWSim::readSim(ros::Time time, ros::Duration period) {
   }
 }
 
-void LeggedHWSim::writeSim(ros::Time time, ros::Duration period) {
+void BipedalHWSim::writeSim(ros::Time time, ros::Duration period) {
   for (auto joint : hybridJointDatas_) {
     auto& buffer = cmdBuffer_.find(joint.joint_.getName())->second;
     if (time == ros::Time(period.toSec())) {  // Simulation reset
@@ -177,7 +177,7 @@ void LeggedHWSim::writeSim(ros::Time time, ros::Duration period) {
   DefaultRobotHWSim::writeSim(time, period);
 }
 
-void LeggedHWSim::parseImu(XmlRpc::XmlRpcValue& imuDatas, const gazebo::physics::ModelPtr& parentModel) {
+void BipedalHWSim::parseImu(XmlRpc::XmlRpcValue& imuDatas, const gazebo::physics::ModelPtr& parentModel) {
   ROS_ASSERT(imuDatas.getType() == XmlRpc::XmlRpcValue::TypeStruct);
   for (auto it = imuDatas.begin(); it != imuDatas.end(); ++it) {
     if (!it->second.hasMember("frame_id")) {
@@ -232,7 +232,7 @@ void LeggedHWSim::parseImu(XmlRpc::XmlRpcValue& imuDatas, const gazebo::physics:
   }
 }
 
-void LeggedHWSim::parseContacts(XmlRpc::XmlRpcValue& contactNames) {
+void BipedalHWSim::parseContacts(XmlRpc::XmlRpcValue& contactNames) {
   ROS_ASSERT(contactNames.getType() == XmlRpc::XmlRpcValue::TypeArray);
   for (int i = 0; i < contactNames.size(); ++i) {  // NOLINT(modernize-loop-convert)
     std::string name = contactNames[i];
@@ -245,5 +245,5 @@ void LeggedHWSim::parseContacts(XmlRpc::XmlRpcValue& contactNames) {
 } // namespace bipedal_robot
 }  // namespace ocs2
 
-PLUGINLIB_EXPORT_CLASS(ocs2::bipedal_robot::LeggedHWSim, gazebo_ros_control::RobotHWSim)
+PLUGINLIB_EXPORT_CLASS(ocs2::bipedal_robot::BipedalHWSim, gazebo_ros_control::RobotHWSim)
 GZ_REGISTER_MODEL_PLUGIN(gazebo_ros_control::GazeboRosControlPlugin)  // Default plugin

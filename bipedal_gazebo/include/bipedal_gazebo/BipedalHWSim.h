@@ -48,7 +48,7 @@ struct ImuData {
  * @brief a RobotHW inheriting from DefaultRobotHWSim
  *  Add some modifications to the DefaultRobotHWSim
  */
-class LeggedHWSim : public gazebo_ros_control::DefaultRobotHWSim {
+class BipedalHWSim : public gazebo_ros_control::DefaultRobotHWSim {
  public:
   bool initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
                const urdf::Model* urdf_model, std::vector<transmission_interface::TransmissionInfo> transmissions) override;
