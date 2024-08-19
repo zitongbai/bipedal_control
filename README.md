@@ -2,7 +2,7 @@
 
 bipedal_control is an NMPC framework for bipedal robot depending on [OCS2](https://github.com/leggedrobotics/ocs2)
 
-# Installation
+# Installation and Usage
 
 ## Preparation
 
@@ -67,7 +67,7 @@ its dependencies following the step below.
    the [document](https://leggedrobotics.github.io/ocs2/robotic_examples.html#legged-robot) and below.
    ![](https://leggedrobotics.github.io/ocs2/_images/legged_robot.gif)
 
-## Build
+## Build and simulate in Gazebo
 
 Clone the repository to the `src` folder of your catkin workspace.
 
@@ -80,46 +80,71 @@ Build the source code of `bipedal_control`.
 
 ```bash
 cd ~/bipedal_ws
-catkin build ocs2_bipedal_robot_ros
+catkin build bipedal_controllers h1_description h1_ocs2_config
 ```
 
-# Implemente your own robot
+run the simulation in Gazebo:
+```bash
+# in terminal 1
+roslaunch h1_ocs2_config bringup_gazebo.launch rviz:=true
+# wait for gazebo to start
+# in terminal 2
+rosrun h1_ocs2_config restart_gazebo.py
+```
 
-For implementation of your own robot, here are some steps to follow:
+Sometimes the robot might fall down after reset, in which case you can run the restart command again. And it is recommended to switch to the 'trot' gait as soon as possible to prevent the robot from falling down. (It is a known issue and should be fixed in the future.)
 
-1. Create a folder under `bipedal_robot_example` to store some ROS packages specific to your robot. (e.g., `bipedal_robot_example/unitree_h1`)
 
-2. Create a ROS package for the urdf model of your robot, or you can copy the out-of-the-box package containing the urdf model to here. (e.g., `bipedal_robot_example/unitree_h1/h1_description`). Make sure the urdf model is correct (you can use `check_urdf`) and can be visualized in RViz.
+## Mujoco >= 3.0.0
 
-3. Create a ROS package for the configuration of ocs2 for your robot. (e.g., `bipedal_robot_example/unitree_h1/h1_ocs2_config`). It should contain the following contents: 
-    * `gait.info`: the gait information of the robot, including several mode templates and the corresponding mode sequences.
-    * `reference.info`: the reference information of the robot, it would be used in your command.
-    * `task.info`
-    
-    You can copy these files from `bipedal_robot_example/unitree_h1/h1_ocs2_config` and modify them according to your robot. Details would be explained later. 
+If you would like to simulate in mujoco, 
 
-    You can also create the launch file in this package to start bipedal interface node and a dummy node to test the MPC trajectory planner. (you can refer to `bipedal_robot_example/unitree_h1/h1_ocs2_config/launch/bipedal_robot_sqp.launch`) 
+```bash
+sudo apt install libglfw3-dev libxinerama-dev libxcursor-dev libxi-dev
+```
+```bash
+# it is not necessary to download the repo in the catkin workspace, you can download, build and install it anywhere you like.
+git clone https://github.com/google-deepmind/mujoco.git
+mkdir build && cd build
+cmake ..
+make -j4
+sudo make install
+```
+Test:
+```bash
+simulate
+```
+If the mujoco simulator pops up, the installation is successful.
 
-4. If your robot does not have links in the sole, add virtual links to the urdf model of your robot. These links are used to construct contact constraints in MPC. You can refer to `right_sole_1_link`, etc. in `bipedal_robot_example/unitree_h1/h1_description/urdf/h1_with_sole.urdf` for an example.
+After successfully installing mujoco, you can build related packages in the catkin workspace.
+```bash
+cd ~/bipedal_ws
+catkin build bipedal_mujoco
+```
+and then run the following command to start the simulation in mujoco:
+```bash
+# in terminal 1
+roslaunch h1_ocs2_config bringup_mujoco.launch rviz:=true
+# wait for gazebo to start
+# in terminal 2
+rosrun h1_ocs2_config restart_mujoco.py
+```
 
-5. Modify `jointNames` in `task.info` to match **ONLY** the **revolute legged** joint names of your robot. Upper body joints should not be included.
+Sometimes the robot might fall down after reset, in which case you can run the restart command again. And it is recommended to switch to the 'trot' gait as soon as possible to prevent the robot from falling down. (It is a known issue and should be fixed in the future.)
 
-6. Modify `contactNames3DoF` in `task.info` to match the contact points (links defined in 4) of your robot.
+# Implement your own robot
 
-7. Modify `initialState` in `task.info` and `defaultJointState` in `reference.info` to set the initial state of your robot.
-
-8. Create a launch file like `/bipedal_robot_example/unitree_h1/h1_ocs2_config/launch/bipedal_robot_sqp.launch` to launch the bipedal interface node and a dummy node to test the MPC trajectory planner.
-
-9. Modify `torqueLimitsTask` in `task.info`
+For implementation of your own robot, please refer to the readme in `bipedal_robot_example`.
 
 # Acknowledgement
 
 * [OCS2](https://github.com/leggedrobotics/ocs2): a C++ toolbox tailored for Optimal Control for Switched Systems.
 * [legged_control](https://github.com/qiayuanl/legged_control.git):an NMPC-WBC legged robot control stack and framework.
+* [hunter_bipedal_control]https://github.com/bridgedp/hunter_bipedal_control
 
 # TODO
 
 * self collision avoidance and visualization
 * Currently, the imu name in ros control must be `base_imu`. If you want to use another name, you should modify the following code:
    * `BipedalController.cpp`: `imuSensorHandle_ = imuSensorInterface->getHandle("base_imu");`
-   * `/bipedal_gazebo/config/default.yaml`: `base_imu`
+   * `src/h1_description/config/hw_sim.yaml`: `base_imu`

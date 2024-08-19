@@ -76,6 +76,7 @@
   <depend>ocs2_centroidal_model</depend>
   <depend>ocs2_core</depend>
 
+  <depend>bipedal_gazebo</depend>
   <depend>control_msgs</depend>
   <depend>control_toolbox</depend>
   <depend>realtime_tools</depend>
