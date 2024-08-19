@@ -1,5 +1,7 @@
 # How to Implement your own robot
 
+**The following instructions are out of data. It would be updated soon.**
+
 For implementation of your own robot, here are some steps to follow:
 
 1. Create a folder under `bipedal_robot_example` to store some ROS packages specific to your robot. (e.g., `bipedal_robot_example/unitree_h1`)
