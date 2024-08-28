@@ -20,7 +20,7 @@
 #include <bipedal_estimation/StateEstimateBase.h>
 #include <bipedal_wbc/WeightedWbc.h>
 #include <ocs2_bipedal_robot/BipedalRobotInterface.h>
-#include <ocs2_bipedal_robot_ros/visualization/BipedalRobotVisualizer.h>
+#include <bipedal_controllers/BipedalControllerVisualizer.h>
 #include <bipedal_controllers/SafetyChecker.h>
 
 #include <ocs2_centroidal_model/CentroidalModelRbdConversions.h>
@@ -93,7 +93,7 @@ protected:
   std::shared_ptr<MPC_MRT_Interface> mpcMrtInterface_;
 
   // Visualization
-  std::shared_ptr<BipedalRobotVisualizer> robotVisualizer_;
+  std::shared_ptr<BipedalControllerVisualizer> robotVisualizer_;
   ros::Publisher observationPublisher_;
 
   // low-level controller

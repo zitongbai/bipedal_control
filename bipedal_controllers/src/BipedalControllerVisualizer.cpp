@@ -1,31 +1,13 @@
-/******************************************************************************
-Copyright (c) 2021, Farbod Farshidian. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
- * Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-******************************************************************************/
+/**
+ * @file BipedalControllerVisualizer.cpp
+ * @author xiaobaige (zitongbai@outlook.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-08-28
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 // Pinocchio forward declarations must be included first
 #include <pinocchio/fwd.hpp>
@@ -34,17 +16,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/kinematics.hpp>
 
-#include "ocs2_bipedal_robot_ros/visualization/BipedalRobotVisualizer.h"
+#include "bipedal_controllers/BipedalControllerVisualizer.h"
+#include "ocs2_bipedal_robot/gait/MotionPhaseDefinition.h"
 
 // OCS2
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_core/misc/LinearInterpolation.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
 #include <ocs2_ros_interfaces/visualization/VisualizationHelpers.h>
-#include "ocs2_bipedal_robot/gait/MotionPhaseDefinition.h"
+#include <ocs2_bipedal_robot/common/Types.h>
 
 // Additional messages not in the helpers file
 #include <geometry_msgs/PoseArray.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <visualization_msgs/MarkerArray.h>
 
 // URDF related
@@ -54,17 +38,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace ocs2 {
 namespace bipedal_robot {
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-BipedalRobotVisualizer::BipedalRobotVisualizer(PinocchioInterface pinocchioInterface, CentroidalModelInfo centroidalModelInfo,
-                                             const PinocchioEndEffectorKinematics& endEffectorKinematics, ros::NodeHandle& nodeHandle,
-                                             scalar_t maxUpdateFrequency)
+BipedalControllerVisualizer::BipedalControllerVisualizer(PinocchioInterface pinocchioInterface, CentroidalModelInfo centroidalModelInfo,
+                            const PinocchioEndEffectorKinematics& endEffectorKinematics, ros::NodeHandle& nodeHandle,
+                            scalar_t maxUpdateFrequency)
     : pinocchioInterface_(std::move(pinocchioInterface)),
       centroidalModelInfo_(std::move(centroidalModelInfo)),
       endEffectorKinematicsPtr_(endEffectorKinematics.clone()),
       lastTime_(std::numeric_limits<scalar_t>::lowest()),
-      minPublishTimeDifference_(1.0 / maxUpdateFrequency) {
+      minPublishTimeDifference_(1.0 / maxUpdateFrequency)
+{
   endEffectorKinematicsPtr_->setPinocchioInterface(pinocchioInterface_);
   launchVisualizerNode(nodeHandle);
 
@@ -75,41 +57,23 @@ BipedalRobotVisualizer::BipedalRobotVisualizer(PinocchioInterface pinocchioInter
     jointNames_.push_back(model.names[i]);
   }
   // get base link name
+  // TODO: maybe it is can be setup outside
   baseLinkName_ = model.frames[2].name; // 0: universe, 1: root_joint
+}
 
-};
-
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::launchVisualizerNode(ros::NodeHandle& nodeHandle) {
+void BipedalControllerVisualizer::launchVisualizerNode(ros::NodeHandle& nodeHandle){
   costDesiredBasePositionPublisher_ = nodeHandle.advertise<visualization_msgs::Marker>("/bipedal_robot/desiredBaseTrajectory", 1);
   costDesiredFeetPositionPublishers_.resize(centroidalModelInfo_.numThreeDofContacts);
   costDesiredFeetPositionPublishers_[0] = nodeHandle.advertise<visualization_msgs::Marker>("/bipedal_robot/desiredFeetTrajectory/LF", 1);
   costDesiredFeetPositionPublishers_[1] = nodeHandle.advertise<visualization_msgs::Marker>("/bipedal_robot/desiredFeetTrajectory/RF", 1);
   stateOptimizedPublisher_ = nodeHandle.advertise<visualization_msgs::MarkerArray>("/bipedal_robot/optimizedStateTrajectory", 1);
   currentStatePublisher_ = nodeHandle.advertise<visualization_msgs::MarkerArray>("/bipedal_robot/currentState", 1);
-
-  // Load URDF model
-  urdf::Model urdfModel;
-  if (!urdfModel.initParam("bipedal_robot_description")) {
-    std::cerr << "[BipedalRobotVisualizer] Could not read URDF from: \"bipedal_robot_description\"" << std::endl;
-  } else {
-    KDL::Tree kdlTree;
-    kdl_parser::treeFromUrdfModel(urdfModel, kdlTree);
-
-    robotStatePublisherPtr_.reset(new robot_state_publisher::RobotStatePublisher(kdlTree));
-    robotStatePublisherPtr_->publishFixedTransforms(true);
-  }
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::update(const SystemObservation& observation, const PrimalSolution& primalSolution, const CommandData& command) {
-  if (observation.time - lastTime_ > minPublishTimeDifference_) {
-    const auto& model = pinocchioInterface_.getModel();
-    auto& data = pinocchioInterface_.getData();
+void BipedalControllerVisualizer::update(const SystemObservation& observation, const PrimalSolution& primalSolution, const CommandData& command){
+  if(observation.time - lastTime_ < minPublishTimeDifference_){
+    const auto & model = pinocchioInterface_.getModel();
+    auto & data = pinocchioInterface_.getData();
     pinocchio::forwardKinematics(model, data, centroidal_model::getGeneralizedCoordinates(observation.state, centroidalModelInfo_));
     pinocchio::updateFramePlacements(model, data);
 
@@ -118,14 +82,11 @@ void BipedalRobotVisualizer::update(const SystemObservation& observation, const 
     publishDesiredTrajectory(timeStamp, command.mpcTargetTrajectories_);
     publishOptimizedStateTrajectory(timeStamp, primalSolution.timeTrajectory_, primalSolution.stateTrajectory_,
                                     primalSolution.modeSchedule_);
-    lastTime_ = observation.time;
+    lastTime_ = observation.time;  
   }
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const SystemObservation& observation) {
+void BipedalControllerVisualizer::publishObservation(ros::Time timeStamp, const SystemObservation& observation){
   // Extract components from state
   const auto basePose = centroidal_model::getBasePose(observation.state, centroidalModelInfo_);
   const auto qJoints = centroidal_model::getJointAngles(observation.state, centroidalModelInfo_);
@@ -137,67 +98,43 @@ void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const Syste
     feetForces[i] = centroidal_model::getContactForces(observation.input, i, centroidalModelInfo_);
   }
 
-  // Publish
-  // TODO: re-enable it when another visualization has been created for controller
-  // publishJointTransforms(timeStamp, qJoints);
-  publishBaseTransform(timeStamp, basePose);
+  // update tf from odom to base link
+  publishBaseTransform(timeStamp, basePose);  // TODO: move it to observer
   publishCartesianMarkers(timeStamp, modeNumber2StanceLeg(observation.mode), feetPositions, feetForces);
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishJointTransforms(ros::Time timeStamp, const vector_t& jointAngles) const {
-  if (robotStatePublisherPtr_ != nullptr) {
-    assert(jointAngles.size() == jointNames_.size());
+/**
+ * @brief update tf from odom to base link
+ * 
+ * @param timeStamp 
+ * @param basePose 
+ */
+void BipedalControllerVisualizer::publishBaseTransform(ros::Time timeStamp, const vector_t& basePose){
+  geometry_msgs::TransformStamped baseToWorldTransform;
+  baseToWorldTransform.header = getHeaderMsg(frameId_, timeStamp);
+  baseToWorldTransform.child_frame_id = baseLinkName_;
 
-    // construct a dictionary of joint names and joint positions
-    std::map<std::string, scalar_t> jointPositions;
-    for (size_t i = 0; i < jointNames_.size(); i++) {
-      jointPositions[jointNames_[i]] = jointAngles[i];
-    }
+  const Eigen::Quaternion<scalar_t> q_world_base = getQuaternionFromEulerAnglesZyx(vector3_t(basePose.tail<3>()));
+  baseToWorldTransform.transform.rotation = getOrientationMsg(q_world_base);
+  baseToWorldTransform.transform.translation = getVectorMsg(basePose.head<3>());
 
-    robotStatePublisherPtr_->publishTransforms(jointPositions, timeStamp);
-  }
+  tfBroadcaster_.sendTransform(baseToWorldTransform);
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishBaseTransform(ros::Time timeStamp, const vector_t& basePose) {
-  if (robotStatePublisherPtr_ != nullptr) {
-    geometry_msgs::TransformStamped baseToWorldTransform;
-    baseToWorldTransform.header = getHeaderMsg(frameId_, timeStamp);
-    baseToWorldTransform.child_frame_id = baseLinkName_;
-
-    const Eigen::Quaternion<scalar_t> q_world_base = getQuaternionFromEulerAnglesZyx(vector3_t(basePose.tail<3>()));
-    baseToWorldTransform.transform.rotation = getOrientationMsg(q_world_base);
-    baseToWorldTransform.transform.translation = getVectorMsg(basePose.head<3>());
-    tfBroadcaster_.sendTransform(baseToWorldTransform);
-  }
-}
-
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishTrajectory(const std::vector<SystemObservation>& system_observation_array, scalar_t speed) {
-  for (size_t k = 0; k < system_observation_array.size() - 1; k++) {
-    scalar_t frameDuration = speed * (system_observation_array[k + 1].time - system_observation_array[k].time);
-    scalar_t publishDuration = timedExecutionInSeconds([&]() { publishObservation(ros::Time::now(), system_observation_array[k]); });
-    if (frameDuration > publishDuration) {
-      ros::WallDuration(frameDuration - publishDuration).sleep();
-    }
-  }
-}
-
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishCartesianMarkers(ros::Time timeStamp, const contact_flag_t& contactFlags,
-                                                    const std::vector<vector3_t>& feetPositions,
-                                                    const std::vector<vector3_t>& feetForces) const {
+/**
+ * @brief publish markers of feet position, feet forces, center of pressure, 
+ *        support polygon
+ * 
+ * @param timeStamp 
+ * @param contactFlags 
+ * @param feetPositions 
+ * @param feetForces 
+ */
+void BipedalControllerVisualizer::publishCartesianMarkers(ros::Time timeStamp, const contact_flag_t& contactFlags, 
+                                                          const std::vector<vector3_t>& feetPositions,
+                                                          const std::vector<vector3_t>& feetForces) const{
   // Reserve message
-  const size_t numberOfCartesianMarkers = 10;
+  const size_t numberOfCartesianMarkers = centroidalModelInfo_.numThreeDofContacts * 2 + 2;
   visualization_msgs::MarkerArray markerArray;
   markerArray.markers.reserve(numberOfCartesianMarkers);
 
@@ -224,10 +161,13 @@ void BipedalRobotVisualizer::publishCartesianMarkers(ros::Time timeStamp, const 
   currentStatePublisher_.publish(markerArray);
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishDesiredTrajectory(ros::Time timeStamp, const TargetTrajectories& targetTrajectories) {
+/**
+ * @brief Publish target trajectories of CoM and feet
+ * 
+ * @param timeStamp 
+ * @param targetTrajectories 
+ */
+void BipedalControllerVisualizer::publishDesiredTrajectory(ros::Time timeStamp, const TargetTrajectories& targetTrajectories) {
   const auto& stateTrajectory = targetTrajectories.stateTrajectory;
   const auto& inputTrajectory = targetTrajectories.inputTrajectory;
 
@@ -287,11 +227,8 @@ void BipedalRobotVisualizer::publishDesiredTrajectory(ros::Time timeStamp, const
   }
 }
 
-/******************************************************************************************************/
-/******************************************************************************************************/
-/******************************************************************************************************/
-void BipedalRobotVisualizer::publishOptimizedStateTrajectory(ros::Time timeStamp, const scalar_array_t& mpcTimeTrajectory,
-                                                            const vector_array_t& mpcStateTrajectory, const ModeSchedule& modeSchedule) {
+void BipedalControllerVisualizer::publishOptimizedStateTrajectory(ros::Time timeStamp, const scalar_array_t& mpcTimeTrajectory,
+                                                            const vector_array_t& mpcStateTrajectory, const ModeSchedule& modeSchedule){
   if (mpcTimeTrajectory.empty() || mpcStateTrajectory.empty()) {
     return;  // Nothing to publish
   }
@@ -378,5 +315,6 @@ void BipedalRobotVisualizer::publishOptimizedStateTrajectory(ros::Time timeStamp
   stateOptimizedPublisher_.publish(markerArray);
 }
 
-}  // namespace bipedal_robot
+
+}  // namespace bipedal_control
 }  // namespace ocs2
