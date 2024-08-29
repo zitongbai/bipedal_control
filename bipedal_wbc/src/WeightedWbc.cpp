@@ -75,7 +75,7 @@ vector_t WeightedWbc::update(const vector_t& stateDesired, const vector_t& input
     // save to lastQpSol_
     lastQpSol_ = qpSol;
   } else {
-    std::cerr << "[WeightedWbc] QP not solved !!!" << std::endl;
+    // std::cerr << "[WeightedWbc] QP not solved !!!" << std::endl;
     // qpSol.setZero(getNumDecisionVars());
     qpSol = lastQpSol_;
   }

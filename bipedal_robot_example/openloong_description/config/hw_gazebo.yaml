@@ -1,0 +1,9 @@
+gazebo:
+  delay: 0.009
+  imus:
+    base_imu:
+      frame_id: Link_imu
+      orientation_covariance_diagonal: [ 0.0012, 0.0012, 0.0012 ]
+      angular_velocity_covariance: [ 0.0004, 0.0004, 0.0004 ]
+      linear_acceleration_covariance: [ 0.01, 0.01, 0.01 ]
+  contacts: [ "Link_sole_l_front", "Link_sole_l_back", "Link_sole_r_front", "Link_sole_r_back" ]

@@ -3,10 +3,12 @@ import argparse
 
 
 args = argparse.ArgumentParser()
-args.add_argument('--urdf', type=str, default = '../urdf/h1.urdf', help='path to the urdf file')
+args.add_argument('--urdf_in', type=str, help='path to the urdf file', required=True)
+args.add_argument('--urdf_out', type=str, help='path to the urdf file', required=True)
 args.add_argument('--root_link', type=str, help='root link of the robot', required=True)
 
-urdf_file = args.parse_args().urdf
+urdf_file = args.parse_args().urdf_in
+output_urdf_file = args.parse_args().urdf_out
 root_link = args.parse_args().root_link
 
 with open(urdf_file, 'r') as file:
@@ -181,4 +183,4 @@ tree = ET.ElementTree(root)
 # add the following tag in the begining of the file
 # <?xml version="1.0" encoding="utf-8"?>
 
-tree.write('../urdf/h1_gazebo.urdf', encoding='utf-8', xml_declaration=True)  
+tree.write(output_urdf_file, encoding='utf-8', xml_declaration=True)  

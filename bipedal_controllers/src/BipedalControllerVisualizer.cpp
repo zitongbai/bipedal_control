@@ -71,7 +71,7 @@ void BipedalControllerVisualizer::launchVisualizerNode(ros::NodeHandle& nodeHand
 }
 
 void BipedalControllerVisualizer::update(const SystemObservation& observation, const PrimalSolution& primalSolution, const CommandData& command){
-  if(observation.time - lastTime_ < minPublishTimeDifference_){
+  if(observation.time - lastTime_ > minPublishTimeDifference_){
     const auto & model = pinocchioInterface_.getModel();
     auto & data = pinocchioInterface_.getData();
     pinocchio::forwardKinematics(model, data, centroidal_model::getGeneralizedCoordinates(observation.state, centroidalModelInfo_));

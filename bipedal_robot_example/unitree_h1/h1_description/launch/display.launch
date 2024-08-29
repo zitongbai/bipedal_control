@@ -1,6 +1,5 @@
 <launch>
-  <arg
-    name="model" />
+
   <param
     name="robot_description"
     textfile="$(find h1_description)/urdf/h1_with_sole.urdf" />
