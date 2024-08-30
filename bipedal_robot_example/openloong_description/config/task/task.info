@@ -203,7 +203,7 @@ initialState
    ;; Base Pose: [position, orientation] ;;
    (6,0)  0.0     ; p_base_x
    (7,0)  0.0     ; p_base_y
-   (8,0)  1.0766   ; p_base_z
+   (8,0)  1.07   ; p_base_z
    (9,0)  0.0     ; theta_base_z
    (10,0) 0.0     ; theta_base_y
    (11,0) 0.0     ; theta_base_x
@@ -211,15 +211,15 @@ initialState
    ;; Leg Joint Positions: [LF, RF] ;;
   (12,0)  0.10    ;   J_hip_l_roll
   (13,0)  0.00    ;   J_hip_l_yaw
-  (14,0)  0.40    ;   J_hip_l_pitch
+  (14,0)  0.30    ;   J_hip_l_pitch
   (15,0)  -0.80    ;   J_knee_l_pitch
-  (16,0)  0.40    ;   J_ankle_l_pitch
+  (16,0)  0.50    ;   J_ankle_l_pitch
   (17,0)  -0.10    ;   J_ankle_l_roll
   (18,0)  -0.10    ;   J_hip_r_roll
   (19,0)  0.00    ;   J_hip_r_yaw
-  (20,0)  0.40    ;   J_hip_r_pitch
+  (20,0)  0.30    ;   J_hip_r_pitch
   (21,0)  -0.80    ;   J_knee_r_pitch
-  (22,0)  0.40    ;   J_ankle_r_pitch
+  (22,0)  0.50    ;   J_ankle_r_pitch
   (23,0)  0.10    ;   J_ankle_r_roll
 }
 
@@ -302,14 +302,17 @@ frictionConeSoftConstraint
   delta                  5.0
 }
 
+; ---------------------------------------------------
 ; Whole body control
+; ---------------------------------------------------
 torqueLimitsTask
 {
   (0,0)  500     ; hip_yaw
   (1,0)  500     ; hip_roll
   (2,0)  500     ; hip_pitch
   (3,0)  500     ; knee
-  (4,0)  500     ; ankle
+  (4,0)  500     ; ankle_pitch
+  (5,0)  500     ; ankle_roll
 }
 
 frictionConeTask

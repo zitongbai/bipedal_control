@@ -24,7 +24,7 @@ create the following folers under the `xxx_description` folder
 
 make sure the paths inside the urdf and mjcf files are correct (you can use relative path). For example, the path of the mesh files should be like `package://xxx_description/meshes/base_link.stl`.
 
-You can use rviz to visualize the urdf file of your robot, by running a launch file similar to that in `bipedal_robot_example/unitree_h1/h1_description/launch/display.launch`.
+You can use rviz to visualize the urdf file of your robot, by running a launch file similar to that in `bipedal_robot_example/openloong_description/launch/display.launch`.
 It is very useful when you want to check joint rotation directions, link positions, etc.
 
 ## 3 Create modified urdf files
@@ -78,7 +78,7 @@ You can:
 
 ### Create a new urdf file for gazebo simulation
 
-Copy the `create_urdf_for_gazebo.py` script under the `bipedal_robot_example/unitree_h1/h1_description/script/` to your package's `script` folder. Modify the script to match the urdf file of your robot. And then run: 
+Copy the `create_urdf_for_gazebo.py` script under the `bipedal_robot_example/openloong_description/script/` to your package's `script` folder. Modify the script to match the urdf file of your robot. And then run: 
 ```bash
 # in the package path, change the arguments to match your robot
 python3 script/create_urdf_for_gazebo.py --urdf_in urdf/xxx.urdf --urdf_out urdf/xxx_gazebo.urdf --root_link {base_link_name}
@@ -129,7 +129,7 @@ Change the content of these files to match your robot. Here are what you should 
     - `comHeight`
     - `defaultJointState` in `reference.info`
 - in `task.info`
-    - `model_settings.jointNames`: Only put leg joints here. And the order of joints is very important. The order should be the same as the order of joints used in pinocchio, which might not be the same in the urdf file. (TODO: a useful script to get the correct order of joints)
+    - `model_settings.jointNames`: Only put **revolute leg** joints here. And the order of joints is very important. The order should be the same as the order of joints used in pinocchio, which might not be the same in the urdf file. (TODO: a useful script to get the correct order of joints)
     - `model_settings.contactNames3DoF`
     - `model_settings.upperJointNames`
     - `initialState`
@@ -137,6 +137,35 @@ Change the content of these files to match your robot. Here are what you should 
 
 
 Notice that if you change your urdf during development, remember to set `model_settings.recompileLibrariesCppAd` to `true` in `task.info`. 
+
+## 6 ROS Control
+
+We use the following ros controllers:
+
+- `joint_state_controller/JointStateController`: publish joint states, provided by ros_control
+- `bipedal_robot/BipedalController`: MPC + WBC + PD + state estimator
+- `bipedal_robot/InitialJointController`: set initial joint states
+- `bipedal_robot/UpperJointController`: control upper body joints
+
+Create a yaml file under the `config` folder of your robot package to configure the controllers. FRefer to `bipedal_robot_example/openloong_description/config/ros_controllers.yaml` for an example. Change the content to match your robot.
+
+## 7 WBC Configuration
+
+Modify the contents relavant to WBC in `task.info` to match your robot.
+
+## 8 Launch File
+
+Create aa launch file `load_controllers.launch` under the `launch` folder of your robot package to: 
+
+- load taskFile, referenceFile, and commandFile
+- load urdf
+- load the controllers using controller_manager
+- start the robot_state_publisher
+- start the node of bipedal_controller
+- start the node of bipedal_robot_gait_command
+
+Refer to `bipedal_robot_example/openloong_description/launch/load_controllers.launch` for an example. Change the content to match your robot.
+
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------

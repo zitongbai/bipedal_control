@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<robot name="OpenLoong">
+<robot name="OpenLoog">
   <mujoco>
     <compiler meshdir="meshes/" balanceinertia="true" discardvisual="false" />
   </mujoco>
@@ -20,9 +20,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.002005314232257054 1.965569310469654e-17 0.20503974889837756"
+        rpy="0.681516417863019 -9.510831300964214e-17 -1.5707963267948968" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/base_link.STL" />
+        <box size="0.3273754417896271 0.36503949132581104 0.42854637797201894" />
       </geometry>
     </collision>
   </link>
@@ -43,9 +44,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-5.388446001104621e-18 -0.0023000007495284107 0.04285000031813979"
+        rpy="-3.141592653589793 6.123233995736766e-17 -1.5707963267948968" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_head_yaw.STL" />
+        <box size="0.06460000015795231 0.07999999821186066 0.09130000043660402" />
       </geometry>
     </collision>
   </link>
@@ -74,9 +76,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.004569 0.033004 0.125" rpy="0.0 -0.0 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_head_pitch.STL" />
+        <cylinder radius="0.09356938956827072" length="0.24085526634007692" />
       </geometry>
     </collision>
   </link>
@@ -105,9 +107,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.00019999966025352478 -0.0364999989978969 -2.46199309846825e-19"
+        rpy="1.5707963267948966 1.5707963267948963 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_01.STL" />
+        <box size="0.07599999755620956 0.0835999995470047 0.08499999437481165" />
       </geometry>
     </collision>
   </link>
@@ -136,9 +139,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.04199999989941716 -0.0464093703776598 -2.6999607212173396e-19"
+        rpy="1.5707963267948968 1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_02.STL" />
+        <box size="0.07599999755620956 0.10800000187009573 0.1523812673985958" />
       </geometry>
     </collision>
   </link>
@@ -167,9 +171,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.0035907567247734783 -0.10748496015079365 0.01636875606667013"
+        rpy="1.4606519640175615 0.002005811287307379 -0.00024354989938328228" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_03.STL" />
+        <box size="0.07793724111544645 0.08272916659551086 0.22364142748542531" />
       </geometry>
     </collision>
   </link>
@@ -198,9 +203,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.036699998658150434 -0.038699888411222426 -0.016136084116916347"
+        rpy="3.141592653589793 1.2962792846817848 1.5707963267948963" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_04.STL" />
+        <box size="0.0700463031850532 0.09969999734312296 0.14310730744646838" />
       </geometry>
     </collision>
   </link>
@@ -229,9 +235,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-6.989149289607797e-18 -0.11250000445847402 -0.0"
+        rpy="-1.5707963267948968 1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_05.STL" />
+        <box size="0.060499999672174454 0.0949999988079071 0.22500000896444527" />
       </geometry>
     </collision>
   </link>
@@ -260,9 +267,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.026500000618398186 -6.938893903907228e-18 0.0017610083875485572"
+        rpy="0.0 -0.0 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_06.STL" />
+        <sphere radius="0.035019154494572595" />
       </geometry>
     </collision>
   </link>
@@ -291,9 +299,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.023900139431431804 -0.13549153442793777 -0.020051703490835498"
+        rpy="0.12369846308283265 1.4761600552272394 -1.487000383386563" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_r_07.STL" />
+        <box size="0.07446015413122065 0.14150577388908692 0.3121386277707064" />
       </geometry>
     </collision>
   </link>
@@ -322,9 +331,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.00019999966025352478 0.03649999899789691 2.4619930984682344e-19"
+        rpy="1.5707963267948966 1.5707963267948963 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_01.STL" />
+        <box size="0.07599999755620956 0.0835999995470047 0.08499999437481165" />
       </geometry>
     </collision>
   </link>
@@ -353,9 +363,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.04199999989941716 0.0464093703776598 2.6999607212173396e-19"
+        rpy="1.5707963267948966 1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_02.STL" />
+        <box size="0.07599999755620956 0.10800000187009573 0.1523812673985958" />
       </geometry>
     </collision>
   </link>
@@ -384,9 +395,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.0035907567247734683 0.10748496015079359 0.016368756066670122"
+        rpy="1.4606519640175615 0.0020058112873073785 3.14134910369041" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_03.STL" />
+        <box size="0.07793724111544645 0.08272916659551086 0.22364142748542543" />
       </geometry>
     </collision>
   </link>
@@ -415,9 +427,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.036699998658150434 0.038699888411222426 -0.01613608411691635"
+        rpy="3.141592653589793 -1.2962792846817848 1.5707963267948968" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_04.STL" />
+        <box size="0.0700463031850532 0.09969999734312296 0.14310730744646838" />
       </geometry>
     </collision>
   </link>
@@ -446,9 +459,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-5.025538570057275e-20 0.11250000445847397 -0.0"
+        rpy="1.5707963267948968 1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_05.STL" />
+        <box size="0.060499999672174454 0.0949999988079071 0.2250000089644455" />
       </geometry>
     </collision>
   </link>
@@ -477,9 +491,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.026500000618398196 0.0 0.0017610083875485572" rpy="0.0 -0.0 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_06.STL" />
+        <sphere radius="0.03501915449457261" />
       </geometry>
     </collision>
   </link>
@@ -508,9 +522,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.02392460755447107 0.13548432560846652 -0.020236280738095466"
+        rpy="-0.040255684516358296 1.479617258229825 1.5707963267948968" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_arm_l_07.STL" />
+        <box size="0.07420478960456942 0.14182928051113333 0.3122642579482233" />
       </geometry>
     </collision>
   </link>
@@ -539,9 +554,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.0020000003278255506 0.07050000154413283 -0.0"
+        rpy="1.5707963267948968 1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_waist_pitch.STL" />
+        <box size="0.11948809772729874 0.14000000804662704 0.14300000621005893" />
       </geometry>
     </collision>
   </link>
@@ -569,9 +585,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.03749999776482582 -0.000999998301267624 -0.019750000908970833"
+        rpy="1.5707963267948966 -0.0 1.5707963267948966" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_waist_roll.STL" />
+        <box size="0.11984597891569138 0.15949999913573265 0.23099999874830246" />
       </geometry>
     </collision>
   </link>
@@ -599,9 +616,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.04885000362992286 -0.0010000020265579265 -0.06647792912553996"
+        rpy="-1.5707963267948966 -1.5707963267948966 0.0" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_waist_yaw.STL" />
+        <box size="0.13895585224963725 0.24769999831914902 0.37378689646720886" />
       </geometry>
     </collision>
   </link>
@@ -630,9 +648,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.06664533359700563 0.002838913719310106 0.01887310041090572"
+        rpy="1.9194156048821496 1.5337999101432476 1.5707963267948966" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_r_roll.STL" />
+        <box size="0.10938711969958106 0.11348148586759206 0.1466289123198961" />
       </geometry>
     </collision>
   </link>
@@ -660,9 +679,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-6.146728992498745e-07 -0.02987500093877315 -0.09949999395757914"
+        rpy="-3.141592653589793 0.0 1.5707963267948966" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_r_yaw.STL" />
+        <box size="0.13824999704957008 0.15199876576662064 0.16399998776614666" />
       </geometry>
     </collision>
   </link>
@@ -691,9 +711,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.003690143681798986 -0.058575004339450266 -0.18734361991381673"
+        rpy="0.005925451270874616 0.09424358761539621 -3.1349431531897416" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_r_pitch.STL" />
+        <box size="0.12843006439604737 0.15761262328366868 0.47204802623524966" />
       </geometry>
     </collision>
   </link>
@@ -722,9 +743,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.016366676075426235 0.0018393083305750849 -0.17232882217954293"
+        rpy="3.105094431773144 0.04012570478521281 -1.568867414157791" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_knee_r_pitch.STL" />
+        <box size="0.08305011195946374 0.10171538619274088 0.4700031674581286" />
       </geometry>
     </collision>
   </link>
@@ -753,9 +775,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="3.421623629929553e-25 1.862645149230957e-09 -4.563480615615845e-08"
+        rpy="1.5707963267948966 -0.0 -1.8369701987210297e-16" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_ankle_r_pitch.STL" />
+        <box size="0.02199999988079071 0.02199999988079071 0.0608999989926815" />
       </geometry>
     </collision>
   </link>
@@ -783,9 +806,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.04750461363863139 8.266688098764184e-05 -0.02654531035541249"
+        rpy="-1.570601476610124 0.0023771746030417148 1.5707963267948968" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_ankle_r_roll.STL" />
+        <box size="0.08003152899406105 0.08708268283896033 0.2450051728352756" />
       </geometry>
     </collision>
   </link>
@@ -797,6 +821,8 @@
     <limit lower="-0.43633" upper="0.43633" effort="58.5" velocity="48.8" />
     <dynamics damping="0.0" friction="0.2" />
   </joint>
+
+
   <link name="Link_hip_l_roll">
     <inertial>
       <origin xyz="0.075725 -0.00093843 0.016591" rpy="0 0 0" />
@@ -814,11 +840,13 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.0663826449459969 -0.0047114262679623 0.018888862674006055"
+        rpy="-1.7552637441547307 1.528726961248851 -1.40401235857474" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_l_roll.STL" />
+        <box size="0.10953407117352178 0.11355194626876655 0.14642735745762184" />
       </geometry>
     </collision>
+
   </link>
   <joint name="J_hip_l_roll" type="revolute">
     <origin xyz="-0.0875 0.12 -0.069" rpy="0 0 0" />
@@ -844,9 +872,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="6.146728992462158e-07 0.029875000938773155 -0.09949999395757914"
+        rpy="-3.141592653589793 0.0 -1.5707963267948966" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_l_yaw.STL" />
+        <box size="0.13824999704957008 0.15199876576662064 0.16399998776614666" />
       </geometry>
     </collision>
   </link>
@@ -875,9 +904,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.0014642016092440264 0.058249998837709434 -0.18771507537857599"
+        rpy="-3.141592653589793 -0.03842855541594409 -3.062974209393719e-16" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_hip_l_pitch.STL" />
+        <box size="0.1286939637515551 0.15699999779462814 0.47319313536392066" />
       </geometry>
     </collision>
   </link>
@@ -906,9 +936,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-0.016274758282985937 -0.001856433296903476 -0.17235459103943276"
+        rpy="3.1056360985523974 -0.04039104665859481 -1.569343773743853" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_knee_l_pitch.STL" />
+        <box size="0.0830744339109904 0.10167547683539807 0.470009645389421" />
       </geometry>
     </collision>
   </link>
@@ -937,9 +968,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="-1.1405412099765178e-25 -1.862645149230957e-09 4.563480615615845e-08"
+        rpy="1.5707963267948966 -0.0 3.141592653589793" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_ankle_l_pitch.STL" />
+        <box size="0.02199999988079071 0.02199999988079071 0.0608999989926815" />
       </geometry>
     </collision>
   </link>
@@ -967,9 +999,10 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0.04749999940395355 0.0012208642475975968 -0.02722398766749333"
+        rpy="1.5707963267948966 0.03579092791791763 1.5707963267948966" />
       <geometry>
-        <mesh filename="package://openloong_description/meshes/Link_ankle_l_roll.STL" />
+        <box size="0.08042679535932826 0.08830404889775641 0.24500000476837158" />
       </geometry>
     </collision>
   </link>

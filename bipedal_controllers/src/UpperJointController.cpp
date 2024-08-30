@@ -61,10 +61,11 @@ bool UpperJointController::init(HybridJointInterface* hw, ros::NodeHandle &nh){
   // load upper joint names
   loadData::loadStdVector(taskFile, "model_settings.upperJointNames", jointNames_, verbose);
   numJoints_ = jointNames_.size();
-  // TODO: make it more general
-  desiredJointPos_ = std::vector<scalar_t>(numJoints_, 0.0);
-  desiredJointPos_[4] = -1.2; // left_elbow_joint
-  desiredJointPos_[8] = -1.2; // right_elbow_joint
+
+  // desiredJointPos_ = std::vector<scalar_t>(numJoints_, 0.0);
+  vector_t defaultUpperJointState(numJoints_);
+  loadData::loadEigenMatrix(referenceFile, "defaultUpperJointState", defaultUpperJointState);
+  desiredJointPos_ = std::vector<scalar_t>(defaultUpperJointState.data(), defaultUpperJointState.data() + defaultUpperJointState.size());
 
   // load upper and lower limits for each joint
   upperLimit_.resize(numJoints_);
@@ -102,19 +103,16 @@ bool UpperJointController::init(HybridJointInterface* hw, ros::NodeHandle &nh){
 void UpperJointController::update(const ros::Time& /*time*/, const ros::Duration& /*period*/){
 
   for(size_t i = 0; i < numJoints_; i++){
-
     scalar_t desired_pos = desiredJointPos_[i];
 
     // make sure joint is within limits
     enforceJointLimits(desired_pos, i);
 
-    scalar_t kp = 20.0;
+    scalar_t kp = 100.0;
     scalar_t kd = 3.0;
 
     jointHandles_[i].setCommand(desired_pos, 0.0, kp, kd, 0.0);
-
   }
-
 }
 
 void UpperJointController::enforceJointLimits(double &command, size_t index){
@@ -124,7 +122,6 @@ void UpperJointController::enforceJointLimits(double &command, size_t index){
     command = lowerLimit_[index];
   }
 }
-
 
 } // namespace bipedal_robot
 } // namespace ocs2

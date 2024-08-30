@@ -12,7 +12,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/base_link.STL" />
+        <mesh filename="package://openloong_description/meshes/base_link.STL" />
       </geometry>
       <material name="">
         <color rgba="0.75294 0.75294 0.75294 1" />
@@ -33,7 +33,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_head_yaw.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_head_yaw.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -61,7 +61,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_head_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_head_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -89,7 +89,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_01.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_01.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -117,7 +117,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_02.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_02.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -145,7 +145,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_03.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_03.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -173,7 +173,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_04.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_04.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -201,7 +201,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_05.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_05.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -229,7 +229,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_06.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_06.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -257,7 +257,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_r_07.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_r_07.STL" />
       </geometry>
       <material name="">
         <color rgba="0.77647 0.75686 0.73725 1" />
@@ -285,7 +285,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_01.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_01.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -313,7 +313,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_02.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_02.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -341,7 +341,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_03.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_03.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -369,7 +369,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_04.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_04.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -397,7 +397,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_05.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_05.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -425,7 +425,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_06.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_06.STL" />
       </geometry>
       <material name="">
         <color rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
@@ -453,7 +453,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_arm_l_07.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_arm_l_07.STL" />
       </geometry>
       <material name="">
         <color rgba="0.77647 0.75686 0.73725 1" />
@@ -481,7 +481,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_waist_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_waist_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -509,7 +509,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_waist_roll.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_waist_roll.STL" />
       </geometry>
       <material name="">
         <color rgba="0.8902 0.8902 0.91373 1" />
@@ -537,7 +537,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_waist_yaw.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_waist_yaw.STL" />
       </geometry>
       <material name="">
         <color rgba="0.8902 0.8902 0.91373 1" />
@@ -565,7 +565,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_r_roll.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_r_roll.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -593,7 +593,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_r_yaw.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_r_yaw.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -621,7 +621,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_r_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_r_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -649,7 +649,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_knee_r_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_knee_r_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.66667 0.69804 0.76863 1" />
@@ -677,7 +677,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_ankle_r_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_ankle_r_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.52941 0.54902 0.54902 1" />
@@ -705,7 +705,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_ankle_r_roll.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_ankle_r_roll.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -735,7 +735,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_l_roll.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_l_roll.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -764,7 +764,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_l_yaw.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_l_yaw.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -792,7 +792,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_hip_l_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_hip_l_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.69804 0.69804 0.69804 1" />
@@ -820,7 +820,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_knee_l_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_knee_l_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.66667 0.69804 0.76863 1" />
@@ -848,7 +848,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_ankle_l_pitch.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_ankle_l_pitch.STL" />
       </geometry>
       <material name="">
         <color rgba="0.52941 0.54902 0.54902 1" />
@@ -876,7 +876,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://AzureLoong/meshes/Link_ankle_l_roll.STL" />
+        <mesh filename="package://openloong_description/meshes/Link_ankle_l_roll.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />

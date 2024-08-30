@@ -419,27 +419,62 @@ void BipedalController::dynamicReconfigCallback(bipedal_controllers::BipedalCont
   wbc_->setWeights(config.swing_leg_weight, config.base_accel_weight, config.contact_force_weight);
 
   // update joint controller pd gains
-  jointKp_[0] = config.leg_motor_1_kp;
-  jointKp_[1] = config.leg_motor_2_kp;
-  jointKp_[2] = config.leg_motor_3_kp;
-  jointKp_[3] = config.leg_motor_4_kp;
-  jointKp_[4] = config.leg_motor_5_kp;
-  jointKp_[5] = config.leg_motor_1_kp;
-  jointKp_[6] = config.leg_motor_2_kp;
-  jointKp_[7] = config.leg_motor_3_kp;
-  jointKp_[8] = config.leg_motor_4_kp;
-  jointKp_[9] = config.leg_motor_5_kp;
 
-  jointKd_[0] = config.leg_motor_1_kd;
-  jointKd_[1] = config.leg_motor_2_kd;
-  jointKd_[2] = config.leg_motor_3_kd;
-  jointKd_[3] = config.leg_motor_4_kd;
-  jointKd_[4] = config.leg_motor_5_kd;
-  jointKd_[5] = config.leg_motor_1_kd;
-  jointKd_[6] = config.leg_motor_2_kd;
-  jointKd_[7] = config.leg_motor_3_kd;
-  jointKd_[8] = config.leg_motor_4_kd;
-  jointKd_[9] = config.leg_motor_5_kd;
+  if (jointKp_.size() == 10){
+    // each leg has 5 joints
+    jointKp_[0] = config.leg_motor_1_kp;
+    jointKp_[1] = config.leg_motor_2_kp;
+    jointKp_[2] = config.leg_motor_3_kp;
+    jointKp_[3] = config.leg_motor_4_kp;
+    jointKp_[4] = config.leg_motor_5_kp;
+    jointKp_[5] = config.leg_motor_1_kp;
+    jointKp_[6] = config.leg_motor_2_kp;
+    jointKp_[7] = config.leg_motor_3_kp;
+    jointKp_[8] = config.leg_motor_4_kp;
+    jointKp_[9] = config.leg_motor_5_kp;
+
+    jointKd_[0] = config.leg_motor_1_kd;
+    jointKd_[1] = config.leg_motor_2_kd;
+    jointKd_[2] = config.leg_motor_3_kd;
+    jointKd_[3] = config.leg_motor_4_kd;
+    jointKd_[4] = config.leg_motor_5_kd;
+    jointKd_[5] = config.leg_motor_1_kd;
+    jointKd_[6] = config.leg_motor_2_kd;
+    jointKd_[7] = config.leg_motor_3_kd;
+    jointKd_[8] = config.leg_motor_4_kd;
+    jointKd_[9] = config.leg_motor_5_kd;
+  } else if (jointKp_.size() == 12){
+    // each leg has 6 joints
+    jointKp_[0] = config.leg_motor_1_kp;
+    jointKp_[1] = config.leg_motor_2_kp;
+    jointKp_[2] = config.leg_motor_3_kp;
+    jointKp_[3] = config.leg_motor_4_kp;
+    jointKp_[4] = config.leg_motor_5_kp;
+    jointKp_[5] = config.leg_motor_6_kp;
+    jointKp_[6] = config.leg_motor_1_kp;
+    jointKp_[7] = config.leg_motor_2_kp;
+    jointKp_[8] = config.leg_motor_3_kp;
+    jointKp_[9] = config.leg_motor_4_kp;
+    jointKp_[10] = config.leg_motor_5_kp;
+    jointKp_[11] = config.leg_motor_6_kp;
+
+    jointKd_[0] = config.leg_motor_1_kd;
+    jointKd_[1] = config.leg_motor_2_kd;
+    jointKd_[2] = config.leg_motor_3_kd;
+    jointKd_[3] = config.leg_motor_4_kd;
+    jointKd_[4] = config.leg_motor_5_kd;
+    jointKd_[5] = config.leg_motor_6_kd;
+    jointKd_[6] = config.leg_motor_1_kd;
+    jointKd_[7] = config.leg_motor_2_kd;
+    jointKd_[8] = config.leg_motor_3_kd;
+    jointKd_[9] = config.leg_motor_4_kd;
+    jointKd_[10] = config.leg_motor_5_kd;
+    jointKd_[11] = config.leg_motor_6_kd;
+  } else{
+    ROS_ERROR_STREAM("[BipedalController] Dynamic reconfigure failed: joint number is not correct.");
+  }
+
+
 }
 
 } // namespace bipedal_robot

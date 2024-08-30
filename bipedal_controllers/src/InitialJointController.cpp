@@ -57,6 +57,9 @@ bool InitialJointPositionController::init(HybridJointInterface* hw, ros::NodeHan
     initialDesiredJointPos_[i] = defaultJointState[i];
   }
 
+  jointKd_.resize(numJoints_);
+  jointKp_.resize(numJoints_);
+
   // load urdf
   urdfTree_ = ::urdf::parseURDFFile(urdfFile);
   if (urdfTree_ == nullptr) {
@@ -80,14 +83,6 @@ bool InitialJointPositionController::init(HybridJointInterface* hw, ros::NodeHan
     lowerLimit_[i] = jointUrdf->limits->lower;
   }
 
-  // // debug print 
-  // std::cerr << "EffortJointInterface joint names: ";
-  // auto debug_names = hw->getNames();  
-  // for(auto name : debug_names){
-  //   std::cerr << name << " ";
-  // }
-  // std::cerr << std::endl;
-
   // ros control
   jointHandles_.clear();
   for(size_t i = 0; i < numJoints_; i++){
@@ -100,17 +95,10 @@ bool InitialJointPositionController::init(HybridJointInterface* hw, ros::NodeHan
     }
   }
 
-  // pid controllers
-  // use pid in control_toolbox
-  // mainly for dynamic reconfigure
-  pidControllers_.resize(size_t(numJoints_/2));
-  for(size_t i=0; i<size_t(numJoints_/2); i++){
-    auto success = pidControllers_[i].init(ros::NodeHandle(nh, jointNames_[i] + "/pid"));
-    if(!success){
-      ROS_ERROR_STREAM("[InitialJointPositionController] Failed to initialize PID controller for joint " << jointNames_[i]);
-      return false;
-    }
-  }
+  // dynamic reconfigure
+  dynamicReconfigServer_.reset(new DynamicReconfigServer(ros::NodeHandle(nh, "params")));
+  dynamicReconfigCallback_ = boost::bind(&InitialJointPositionController::dynamicReconfigCallback, this, _1, _2);
+  dynamicReconfigServer_->setCallback(dynamicReconfigCallback_);
 
   return true;
 }
@@ -130,9 +118,8 @@ void InitialJointPositionController::update(const ros::Time& time, const ros::Du
     // make sure joint is within limits
     enforceJointLimits(desired_pos, i);
 
-    size_t pid_idx = i < numJoints_/2 ? i : i - numJoints_/2;
-    scalar_t kp = pidControllers_[pid_idx].getGains().p_gain_;
-    scalar_t kd = pidControllers_[pid_idx].getGains().d_gain_;
+    scalar_t kp = jointKp_[i];
+    scalar_t kd = jointKd_[i];
 
     jointHandles_[i].setCommand(desired_pos, 0.0, kp, kd, 0.0);
 
@@ -153,6 +140,64 @@ void InitialJointPositionController::enforceJointLimits(double &command, size_t 
   }
 }
 
+// ###############################################################################################################
+// ###############################################################################################################
+// ###############################################################################################################
+void InitialJointPositionController::dynamicReconfigCallback(bipedal_controllers::InitialJointControllerParamsConfig& config, uint32_t level){
+  if(numJoints_ == 10){
+    // each leg has 5 joints
+    jointKp_[0] = config.leg_motor_1_kp;
+    jointKp_[1] = config.leg_motor_2_kp;
+    jointKp_[2] = config.leg_motor_3_kp;
+    jointKp_[3] = config.leg_motor_4_kp;
+    jointKp_[4] = config.leg_motor_5_kp;
+    jointKp_[5] = config.leg_motor_1_kp;
+    jointKp_[6] = config.leg_motor_2_kp;
+    jointKp_[7] = config.leg_motor_3_kp;
+    jointKp_[8] = config.leg_motor_4_kp;
+    jointKp_[9] = config.leg_motor_5_kp;
+
+    jointKd_[0] = config.leg_motor_1_kd;
+    jointKd_[1] = config.leg_motor_2_kd;
+    jointKd_[2] = config.leg_motor_3_kd;
+    jointKd_[3] = config.leg_motor_4_kd;
+    jointKd_[4] = config.leg_motor_5_kd;
+    jointKd_[5] = config.leg_motor_1_kd;
+    jointKd_[6] = config.leg_motor_2_kd;
+    jointKd_[7] = config.leg_motor_3_kd;
+    jointKd_[8] = config.leg_motor_4_kd;
+    jointKd_[9] = config.leg_motor_5_kd;
+  } else if (numJoints_ == 12){
+    // each leg has 6 joints
+    jointKp_[0] = config.leg_motor_1_kp;
+    jointKp_[1] = config.leg_motor_2_kp;
+    jointKp_[2] = config.leg_motor_3_kp;
+    jointKp_[3] = config.leg_motor_4_kp;
+    jointKp_[4] = config.leg_motor_5_kp;
+    jointKp_[5] = config.leg_motor_6_kp;
+    jointKp_[6] = config.leg_motor_1_kp;
+    jointKp_[7] = config.leg_motor_2_kp;
+    jointKp_[8] = config.leg_motor_3_kp;
+    jointKp_[9] = config.leg_motor_4_kp;
+    jointKp_[10] = config.leg_motor_5_kp;
+    jointKp_[11] = config.leg_motor_6_kp;
+
+    jointKd_[0] = config.leg_motor_1_kd;
+    jointKd_[1] = config.leg_motor_2_kd;
+    jointKd_[2] = config.leg_motor_3_kd;
+    jointKd_[3] = config.leg_motor_4_kd;
+    jointKd_[4] = config.leg_motor_5_kd;
+    jointKd_[5] = config.leg_motor_6_kd;
+    jointKd_[6] = config.leg_motor_1_kd;
+    jointKd_[7] = config.leg_motor_2_kd;
+    jointKd_[8] = config.leg_motor_3_kd;
+    jointKd_[9] = config.leg_motor_4_kd;
+    jointKd_[10] = config.leg_motor_5_kd;
+    jointKd_[11] = config.leg_motor_6_kd;
+  } else {
+    ROS_ERROR_STREAM("[InitialJointPositionController] Dynamic reconfigure failed: joint number is not correct.");
+  }
+}
 
 
 } // namespace bipedal_robot

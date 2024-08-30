@@ -1,0 +1,44 @@
+controllers:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 300
+    joints:
+      - J_hip_l_roll
+      - J_hip_l_yaw
+      - J_hip_l_pitch
+      - J_knee_l_pitch
+      - J_ankle_l_pitch
+      - J_ankle_l_roll
+      - J_hip_r_roll
+      - J_hip_r_yaw
+      - J_hip_r_pitch
+      - J_knee_r_pitch
+      - J_ankle_r_pitch
+      - J_ankle_r_roll
+      - J_head_yaw
+      - J_head_pitch
+      - J_arm_r_01
+      - J_arm_r_02
+      - J_arm_r_03
+      - J_arm_r_04
+      - J_arm_r_05
+      - J_arm_r_06
+      - J_arm_r_07
+      - J_arm_l_01
+      - J_arm_l_02
+      - J_arm_l_03
+      - J_arm_l_04
+      - J_arm_l_05
+      - J_arm_l_06
+      - J_arm_l_07
+      - J_waist_pitch
+      - J_waist_roll
+      - J_waist_yaw
+  bipedal_controller:
+    type: bipedal_robot/BipedalController
+  init_joint_pos_controller:
+    type: bipedal_robot/InitialJointController
+  upper_joint_controller:
+    type: bipedal_robot/UpperJointController
+    
+

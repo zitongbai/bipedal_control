@@ -26,7 +26,7 @@
 #include <urdf/model.h>
 
 #include <bipedal_common/hardware_interface/HybridJointInterface.h>
-
+#include "bipedal_controllers/InitialJointControllerParamsConfig.h"
 
 namespace ocs2{
 namespace bipedal_robot{
@@ -51,17 +51,21 @@ private:
     std::vector<scalar_t>  initialDesiredJointPos_;
     std::vector<scalar_t> upperLimit_;
     std::vector<scalar_t> lowerLimit_;
+    std::vector<scalar_t> jointKp_;
+    std::vector<scalar_t> jointKd_;
 
     // ros control interface
     std::vector<HybridJointHandle> jointHandles_;
 
-    // std::vector<control_toolbox::Pid::Gains> pid_gains_;
-    std::vector<control_toolbox::Pid> pidControllers_;
-
-
     void enforceJointLimits(double &command, size_t index);
-    
-    
+
+    // dynamic reconfiguration
+    typedef dynamic_reconfigure::Server<bipedal_controllers::InitialJointControllerParamsConfig> DynamicReconfigServer;
+    std::shared_ptr<DynamicReconfigServer> dynamicReconfigServer_;
+    DynamicReconfigServer::CallbackType dynamicReconfigCallback_;
+    void dynamicReconfigCallback(bipedal_controllers::InitialJointControllerParamsConfig& config, uint32_t level);
+
+
 };
 
 } // namespace bipedal_robot
