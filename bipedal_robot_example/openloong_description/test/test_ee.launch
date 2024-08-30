@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+
+<launch>
+    <!-- visualization config -->
+    <arg name="description_name"   default="bipedal_robot_description"/>
+
+    <!-- The task file for the mpc. -->
+    <arg name="taskFile"          default="$(find openloong_description)/config/task/task.info"/>
+    <!-- The reference related config file of the robot -->
+    <arg name="referenceFile"     default="$(find openloong_description)/config/command/reference.info"/>
+    <!-- The URDF model of the robot -->
+    <arg name="urdfFile"          default="$(find openloong_description)/urdf/AzureLoong.urdf"/>
+
+    <!-- make the files into global parameters -->
+    <param name="taskFile"          value="$(arg taskFile)" />
+    <param name="referenceFile"     value="$(arg referenceFile)" />
+    <param name="urdfFile"          value="$(arg urdfFile)" />
+
+    <node pkg="openloong_description" type="test_ee" name="test_ee"
+          output="screen" launch-prefix=""/>
+
+</launch>

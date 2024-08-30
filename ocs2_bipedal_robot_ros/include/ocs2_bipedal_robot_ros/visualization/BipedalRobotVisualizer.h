@@ -106,7 +106,10 @@ class BipedalRobotVisualizer : public DummyObserver {
   scalar_t minPublishTimeDifference_;
 
   std::vector<std::string> jointNames_;
+  std::vector<std::string> upperJointNames_;
   std::string baseLinkName_;
+
+  std::vector<scalar_t> defaultUpperJointState_;
 };
 
 }  // namespace bipedal_robot

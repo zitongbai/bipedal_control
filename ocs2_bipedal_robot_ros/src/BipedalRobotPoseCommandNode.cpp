@@ -101,8 +101,13 @@ int main(int argc, char* argv[]) {
   ::ros::init(argc, argv, robotName + "_target");
   ::ros::NodeHandle nodeHandle;
   // Get node parameters
-  std::string referenceFile;
+  std::string referenceFile, taskFile;
   nodeHandle.getParam("/referenceFile", referenceFile);
+  nodeHandle.getParam("/taskFile", taskFile);
+  std::vector<std::string> jointNames;
+  loadData::loadStdVector(taskFile, "model_settings.jointNames", jointNames, false);
+
+  defaultJointState.resize(jointNames.size());
 
   loadData::loadCppDataType(referenceFile, "comHeight", comHeight);
   loadData::loadEigenMatrix(referenceFile, "defaultJointState", defaultJointState);

@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // OCS2
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_core/misc/LinearInterpolation.h>
+#include <ocs2_core/misc/LoadData.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
 #include <ocs2_ros_interfaces/visualization/VisualizationHelpers.h>
 #include "ocs2_bipedal_robot/gait/MotionPhaseDefinition.h"
@@ -50,6 +51,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // URDF related
 #include <urdf/model.h>
 #include <kdl_parser/kdl_parser.hpp>
+
+// Boost
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace ocs2 {
 namespace bipedal_robot {
@@ -70,10 +75,6 @@ BipedalRobotVisualizer::BipedalRobotVisualizer(PinocchioInterface pinocchioInter
 
   // get joint names
   const auto& model = pinocchioInterface_.getModel();
-  jointNames_.reserve(model.njoints-2); // Exclude universe and root_joint
-  for (size_t i = 2; i < model.njoints; i++) {
-    jointNames_.push_back(model.names[i]);
-  }
   // get base link name
   baseLinkName_ = model.frames[2].name; // 0: universe, 1: root_joint
 
@@ -101,6 +102,30 @@ void BipedalRobotVisualizer::launchVisualizerNode(ros::NodeHandle& nodeHandle) {
     robotStatePublisherPtr_.reset(new robot_state_publisher::RobotStatePublisher(kdlTree));
     robotStatePublisherPtr_->publishFixedTransforms(true);
   }
+
+  std::string taskFile;
+  nodeHandle.getParam("/taskFile", taskFile);
+  // check file exits
+  boost::filesystem::path taskPath(taskFile);
+  if(!boost::filesystem::exists(taskPath)){
+    throw std::invalid_argument("[BipedalRobotVisualizer] The task file " + taskFile + " does not exist!");
+  }
+  upperJointNames_.clear();
+  jointNames_.clear();
+  loadData::loadStdVector(taskFile, "model_settings.upperJointNames", upperJointNames_, false);
+  loadData::loadStdVector(taskFile, "model_settings.jointNames", jointNames_, false);
+
+  std::string referenceFile;
+  nodeHandle.getParam("/referenceFile", referenceFile);
+  // check file exits
+  boost::filesystem::path referencePath(referenceFile);
+  if(!boost::filesystem::exists(referencePath)){
+    throw std::invalid_argument("[BipedalRobotVisualizer] The reference file " + referenceFile + " does not exist!");
+  }
+  vector_t defaultUpperJointState(upperJointNames_.size());
+  loadData::loadEigenMatrix(referenceFile, "defaultUpperJointState", defaultUpperJointState);
+  // copy to defaultUpperJointState_(std::vector)
+  defaultUpperJointState_ = std::vector<scalar_t>(defaultUpperJointState.data(), defaultUpperJointState.data() + defaultUpperJointState.size());
 }
 
 /******************************************************************************************************/
@@ -138,8 +163,7 @@ void BipedalRobotVisualizer::publishObservation(ros::Time timeStamp, const Syste
   }
 
   // Publish
-  // TODO: re-enable it when another visualization has been created for controller
-  // publishJointTransforms(timeStamp, qJoints);
+  publishJointTransforms(timeStamp, qJoints);
   publishBaseTransform(timeStamp, basePose);
   publishCartesianMarkers(timeStamp, modeNumber2StanceLeg(observation.mode), feetPositions, feetForces);
 }
@@ -155,6 +179,11 @@ void BipedalRobotVisualizer::publishJointTransforms(ros::Time timeStamp, const v
     std::map<std::string, scalar_t> jointPositions;
     for (size_t i = 0; i < jointNames_.size(); i++) {
       jointPositions[jointNames_[i]] = jointAngles[i];
+    }
+
+    // upper joint
+    for (size_t i=0; i < upperJointNames_.size(); i++){
+      jointPositions[upperJointNames_[i]] = defaultUpperJointState_[i];
     }
 
     robotStatePublisherPtr_->publishTransforms(jointPositions, timeStamp);

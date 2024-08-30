@@ -2,7 +2,7 @@ centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single R
   
 bipedal_robot_interface
 {
-  verbose                               true  // show the loaded parameters
+  verbose                               false  // show the loaded parameters
   useAnalyticalGradientsDynamics        false
   useAnalyticalGradientsConstraints     false
 }
@@ -14,42 +14,54 @@ model_settings
 
   verboseCppAd                  true
   recompileLibrariesCppAd       false   // remember to set to true if you change the model
-  modelFolderCppAd              ~/.cache/bipedal_control/h1
+  modelFolderCppAd              ~/.cache/bipedal_control/openloong
   jointNames
   {
-    [0] left_hip_yaw_joint
-    [1] left_hip_roll_joint
-    [2] left_hip_pitch_joint
-    [3] left_knee_joint
-    [4] left_ankle_joint
-    [5] right_hip_yaw_joint
-    [6] right_hip_roll_joint
-    [7] right_hip_pitch_joint
-    [8] right_knee_joint
-    [9] right_ankle_joint
-  }
+    [0] J_hip_l_roll
+    [1] J_hip_l_yaw
+    [2] J_hip_l_pitch
+    [3] J_knee_l_pitch
+    [4] J_ankle_l_pitch
+    [5] J_ankle_l_roll
+    [6] J_hip_r_roll
+    [7] J_hip_r_yaw
+    [8] J_hip_r_pitch
+    [9] J_knee_r_pitch
+    [10] J_ankle_r_pitch
+    [11] J_ankle_r_roll
+  } // The order of the jointNames should match that in pinocchio
   contactNames6DoF
   {
 
   }
   contactNames3DoF
   {
-    [0] left_sole_1_link
-    [1] left_sole_2_link
-    [2] right_sole_1_link
-    [3] right_sole_2_link
+    [0] Link_sole_l_front
+    [1] Link_sole_l_back
+    [2] Link_sole_r_front
+    [3] Link_sole_r_back
   }
   upperJointNames
   {
-    [0] torso_joint
-    [1] left_shoulder_pitch_joint
-    [2] left_shoulder_roll_joint
-    [3] left_shoulder_yaw_joint
-    [4] left_elbow_joint
-    [5] right_shoulder_pitch_joint
-    [6] right_shoulder_roll_joint
-    [7] right_shoulder_yaw_joint
-    [8] right_elbow_joint
+    [0] J_head_yaw
+    [1] J_head_pitch
+    [2] J_arm_r_01
+    [3] J_arm_r_02
+    [4] J_arm_r_03
+    [5] J_arm_r_04
+    [6] J_arm_r_05
+    [7] J_arm_r_06
+    [8] J_arm_r_07
+    [9] J_arm_l_01
+    [10] J_arm_l_02
+    [11] J_arm_l_03
+    [12] J_arm_l_04
+    [13] J_arm_l_05
+    [14] J_arm_l_06
+    [15] J_arm_l_07
+    [16] J_waist_pitch
+    [17] J_waist_roll
+    [18] J_waist_yaw
   }
 }
 
@@ -191,22 +203,24 @@ initialState
    ;; Base Pose: [position, orientation] ;;
    (6,0)  0.0     ; p_base_x
    (7,0)  0.0     ; p_base_y
-   (8,0)  0.930   ; p_base_z
+   (8,0)  1.0766   ; p_base_z
    (9,0)  0.0     ; theta_base_z
    (10,0) 0.0     ; theta_base_y
    (11,0) 0.0     ; theta_base_x
 
    ;; Leg Joint Positions: [LF, RF] ;;
-   (12,0)   0.00   ; left_hip_yaw_joint
-   (13,0)   0.00   ; left_hip_roll_joint
-   (14,0)  -0.50   ; left_hip_pitch_joint
-   (15,0)   1.00   ; left_knee_joint
-   (16,0)  -0.50   ; left_ankle_joint
-   (17,0)  -0.00   ; right_hip_yaw_joint
-   (18,0)   0.00   ; right_hip_roll_joint
-   (19,0)  -0.50   ; right_hip_pitch_joint
-   (20,0)   1.00   ; right_knee_joint
-   (21,0)  -0.50   ; right_ankle_joint
+  (12,0)  0.10    ;   J_hip_l_roll
+  (13,0)  0.00    ;   J_hip_l_yaw
+  (14,0)  0.40    ;   J_hip_l_pitch
+  (15,0)  -0.80    ;   J_knee_l_pitch
+  (16,0)  0.40    ;   J_ankle_l_pitch
+  (17,0)  -0.10    ;   J_ankle_l_roll
+  (18,0)  -0.10    ;   J_hip_r_roll
+  (19,0)  0.00    ;   J_hip_r_yaw
+  (20,0)  0.40    ;   J_hip_r_pitch
+  (21,0)  -0.80    ;   J_knee_r_pitch
+  (22,0)  0.40    ;   J_ankle_r_pitch
+  (23,0)  0.10    ;   J_ankle_r_roll
 }
 
 ; standard state weight matrix
@@ -231,16 +245,18 @@ Q
   (11,11) 200.0    ; theta_base_x
 
   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
-  (12,12) 800.0     ; left_hip_yaw_joint
-  (13,13) 1000.0     ; left_hip_roll_joint
-  (14,14) 20.0     ; left_hip_pitch_joint
-  (15,15) 20.0     ; left_knee_joint
-  (16,16) 20.0     ; left_ankle_joint
-  (17,17) 800.0     ; right_hip_yaw_joint
-  (18,18) 1000.0     ; right_hip_roll_joint
-  (19,19) 20.0     ; right_hip_pitch_joint
-  (20,20) 20.0     ; right_knee_joint
-  (21,21) 20.0     ; right_ankle_joint
+  (12,12)  1000.0    ;   J_hip_l_roll
+  (13,13)  800.0    ;   J_hip_l_yaw
+  (14,14)  20.0    ;   J_hip_l_pitch
+  (15,15)  20.0    ;   J_knee_l_pitch
+  (16,16)  20.0    ;   J_ankle_l_pitch
+  (17,17)  800.0    ;   J_ankle_l_roll
+  (18,18)  1000.0    ;   J_hip_r_roll
+  (19,19)  800.0    ;   J_hip_r_yaw
+  (20,20)  20.0    ;   J_hip_r_pitch
+  (21,21)  20.0    ;   J_knee_r_pitch
+  (22,22)  20.0    ;   J_ankle_r_pitch
+  (23,23)  800.0    ;   J_ankle_r_roll
 }
 
 ; control weight matrix

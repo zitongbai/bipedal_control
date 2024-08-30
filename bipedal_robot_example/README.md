@@ -105,7 +105,38 @@ The gazebo ros control plugin has been set by the `create_urdf_for_gazebo.py` sc
 
 ### Create a launch file to start gazebo simulation
 
-Under your robot package's `launch` folder, create a new launch file to start the gazebo simulation. For example, you can create a file named `gazebo.launch`. Refer to `bipedal_robot_example/unitree_h1/h1_description/launch/gazebo.launch` for an example. Change the content to match your robot.
+Under your robot package's `launch` folder, create a new launch file to start the gazebo simulation. For example, you can create a file named `gazebo.launch`. Refer to `bipedal_robot_example/openloong_description/launch/gazebo.launch` for an example. Change the content to match your robot.
+
+## 5 MPC Configuration
+
+Create the following files under the `config` folder of your robot package:
+
+```bash
+.
+├── config
+│   ├── command
+│   │   ├── gait.info
+│   │   └── reference.info
+│   └── task
+│       └── task.info
+```
+
+Or you can copy them from `bipedal_robot_example/openloong_description/config`. 
+
+Change the content of these files to match your robot. Here are what you should modify:
+
+- in `reference.info`
+    - `comHeight`
+    - `defaultJointState` in `reference.info`
+- in `task.info`
+    - `model_settings.jointNames`: Only put leg joints here. And the order of joints is very important. The order should be the same as the order of joints used in pinocchio, which might not be the same in the urdf file. (TODO: a useful script to get the correct order of joints)
+    - `model_settings.contactNames3DoF`
+    - `model_settings.upperJointNames`
+    - `initialState`
+    - `Q`
+
+
+Notice that if you change your urdf during development, remember to set `model_settings.recompileLibrariesCppAd` to `true` in `task.info`. 
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------

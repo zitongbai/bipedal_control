@@ -214,6 +214,10 @@ void BipedalHWSim::parseImu(XmlRpc::XmlRpcValue& imuDatas, const gazebo::physics
 
     std::string frameId = imuDatas[it->first]["frame_id"];
     gazebo::physics::LinkPtr linkPtr = parentModel->GetLink(frameId);
+    if (linkPtr == nullptr) {
+      ROS_ERROR_STREAM("Imu " << it->first << " has no associated link named " << frameId << ". Maybe you should add disableFixedJointLumping tag in urdf.");
+      continue;
+    }
     ROS_ASSERT(linkPtr != nullptr);
     imuDatas_.push_back((ImuData{
         .linkPtr_ = linkPtr,

@@ -20,6 +20,6 @@
     </include>
   <node
     name="spawn_model" pkg="gazebo_ros" type="spawn_model"
-    args="-param bipedal_robot_description_sim -urdf -x 1.0 -y 1.0 -z 1.05 -model OpenLoong_description"
+    args="-param bipedal_robot_description_sim -urdf -x 0.0 -y 0.0 -z 2.0 -model OpenLoong_description"
     output="screen" />
 </launch>

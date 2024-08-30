@@ -144,12 +144,13 @@ if imu_link is None:
     parent.set('link', root_link)
     child = ET.SubElement(new_imu_joint, 'child')
     child.set('link', new_imu_link_name)
+    root.append(new_imu_joint)
     # add the disableFixedJointLumping tag
     gazebo_ref = ET.Element('gazebo')
     gazebo_ref.set('reference', new_imu_joint_name)
     disableFixedJointLumping = ET.SubElement(gazebo_ref, 'disableFixedJointLumping')
     disableFixedJointLumping.text = 'true'
-    root.append(new_imu_joint)
+    root.append(gazebo_ref)
 else:
     imu_link_name = imu_link.get('name')
     # check if imu_link has inertial tag, if not, add it

@@ -1365,6 +1365,9 @@
     <parent link="base_link" />
     <child link="Link_imu" />
   </joint>
+  <gazebo reference="J_imu">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libbipedal_hw_sim.so">
       <robotNamespace>/</robotNamespace>

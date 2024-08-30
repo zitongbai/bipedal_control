@@ -1,0 +1,71 @@
+targetDisplacementVelocity          0.5;
+targetRotationVelocity              0.3;
+
+comHeight                           1.0766
+
+defaultJointState
+{
+  (0,0)  0.10    ;   J_hip_l_roll
+  (1,0)  0.00    ;   J_hip_l_yaw
+  (2,0)  0.40    ;   J_hip_l_pitch
+  (3,0)  -0.80    ;   J_knee_l_pitch
+  (4,0)  0.40    ;   J_ankle_l_pitch
+  (5,0)  -0.10    ;   J_ankle_l_roll
+  (6,0)  -0.10    ;   J_hip_r_roll
+  (7,0)  0.00    ;   J_hip_r_yaw
+  (8,0)  0.40    ;   J_hip_r_pitch
+  (9,0)  -0.80    ;   J_knee_r_pitch
+  (10,0)  0.40    ;   J_ankle_r_pitch
+  (11,0)  0.10    ;   J_ankle_r_roll
+}
+
+initialModeSchedule
+{
+  modeSequence
+  {
+    [0]  STANCE
+    [1]  STANCE
+  }
+  eventTimes
+  {
+    [0]  0.2
+  }
+}
+
+defaultModeSequenceTemplate
+{
+   modeSequence
+   {
+     [0]     LF
+     [1]     RF
+   }
+   switchingTimes
+   {
+     [0]     0.0
+     [1]     0.35
+     [2]     0.70
+   }
+}
+
+defaultUpperJointState
+{
+  (0,0)   0.0   ;J_head_yaw
+  (1,0)   0.0   ;J_head_pitch
+  (2,0)   -0.80   ;J_arm_r_01
+  (3,0)   -1.20   ;J_arm_r_02
+  (4,0)   -1.60   ;J_arm_r_03
+  (5,0)   1.60   ;J_arm_r_04
+  (6,0)   -1.60   ;J_arm_r_05
+  (7,0)   0.0   ;J_arm_r_06
+  (8,0)   0.0   ;J_arm_r_07
+  (9,0)   0.80   ;J_arm_l_01
+  (10,0)   1.20   ;J_arm_l_02
+  (11,0)   1.60   ;J_arm_l_03
+  (12,0)   1.60   ;J_arm_l_04
+  (13,0)   1.60   ;J_arm_l_05
+  (14,0)   0.0   ;J_arm_l_06
+  (15,0)   0.0   ;J_arm_l_07
+  (16,0)   0.0   ;J_waist_pitch
+  (17,0)   0.0   ;J_waist_roll
+  (18,0)   0.0   ;J_waist_yaw
+}
