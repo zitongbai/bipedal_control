@@ -2,6 +2,11 @@
 
 bipedal_control is an NMPC framework for bipedal robot depending on [OCS2](https://github.com/leggedrobotics/ocs2)
 
+> ⚠️ **Notice:** This repository is no longer actively maintained.  
+> While you are welcome to explore and use the code, please note that updates and issue responses may be infrequent.  
+> Thank you for your interest and understanding.
+
+
 # Installation and Usage
 
 ## Preparation
